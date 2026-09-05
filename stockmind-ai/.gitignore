@@ -11,10 +11,12 @@ __pycache__/
 # Ultralytics & PyTorch caches
 *.cache
 data/*.cache
+computer_vision/data/*.cache
 yolov8n.pt
 
 # Intermediate training runs
 results/train/
+computer_vision/results/train/
 
 # IDE / Editor configuration
 .vscode/

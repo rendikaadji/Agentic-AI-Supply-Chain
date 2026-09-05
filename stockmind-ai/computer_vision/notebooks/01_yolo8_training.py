@@ -2,16 +2,16 @@
 StockMind AI - Phase 1: Foundation & Vision System
 Script: 01_yolo8_training.py
 Deskripsi: Script training YOLOv8n murni berbasis .py (pengganti .ipynb).
-            Mendukung eksekusi langsung dari root workspace maupun Colab:
+            Dapat dijalankan langsung di Google Colab maupun di environment lokal/server:
             Contoh: python notebooks/01_yolo8_training.py --epochs 50 --batch 8
 """
 
 import sys
 from pathlib import Path
 
-# Pastikan root workspace dan folder computer_vision terdaftar di sys.path
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-CV_ROOT = PROJECT_ROOT / "computer_vision"
+# Pastikan root workspace ada di sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+CV_ROOT = Path(__file__).resolve().parent.parent
 for p in [str(PROJECT_ROOT), str(CV_ROOT)]:
     if p not in sys.path:
         sys.path.insert(0, p)

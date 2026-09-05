@@ -20,15 +20,20 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 # Import modul inferensi
-from scripts.inference import BoxDetector, lambda_handler
+from computer_vision.scripts.inference import BoxDetector, lambda_handler
 
 
 class TestVisionInference(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.project_root = Path(__file__).resolve().parent.parent.parent
-        cls.model_path = cls.project_root / "models" / "weights" / "best.pt"
-        cls.test_image_path = cls.project_root / "data" / "test_images" / "warehouse_box_test_0001.jpg"
+        cls.model_path = cls.project_root / "computer_vision" / "models" / "best.pt"
+        if not cls.model_path.exists():
+            cls.model_path = cls.project_root / "models" / "weights" / "best.pt"
+
+        cls.test_image_path = cls.project_root / "computer_vision" / "data" / "test_images" / "warehouse_box_test_0001.jpg"
+        if not cls.test_image_path.exists():
+            cls.test_image_path = cls.project_root / "data" / "test_images" / "warehouse_box_test_0001.jpg"
 
         if not cls.model_path.exists():
             raise unittest.SkipTest("Model best.pt belum tersedia.")

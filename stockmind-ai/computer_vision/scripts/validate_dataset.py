@@ -19,9 +19,9 @@ SUPPORTED_IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Validasi Dataset YOLOv8 untuk StockMind AI")
-    parser.add_argument("--data-dir", type=str, default="data", help="Direktori data")
-    parser.add_argument("--yaml-file", type=str, default="data/data.yaml", help="Path ke data.yaml")
-    parser.add_argument("--report-file", type=str, default="results/data_validation_report.txt", help="Lokasi output laporan")
+    parser.add_argument("--data-dir", type=str, default="computer_vision/data", help="Direktori data")
+    parser.add_argument("--yaml-file", type=str, default="computer_vision/data/data.yaml", help="Path ke data.yaml")
+    parser.add_argument("--report-file", type=str, default="computer_vision/results/data_validation_report.txt", help="Lokasi output laporan")
     return parser.parse_args()
 
 def load_data_yaml(yaml_path: Path):
@@ -300,19 +300,11 @@ def generate_report(data_dir: Path, yaml_info: dict, split_stats: dict, output_p
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(report_content)
 
-    # Simpan juga salinan langsung ke root data_validation_report.txt untuk kemudahan inspeksi
-    root_report = data_dir.parent / "data_validation_report.txt"
-    try:
-        with open(root_report, "w", encoding="utf-8") as f:
-            f.write(report_content)
-    except Exception:
-        pass
-
     return report_content, is_overall_valid
 
 def main():
     args = parse_args()
-    project_root = Path(__file__).resolve().parent.parent
+    project_root = Path(__file__).resolve().parent.parent.parent
     data_dir = project_root / args.data_dir
     yaml_path = project_root / args.yaml_file
     report_path = project_root / args.report_file

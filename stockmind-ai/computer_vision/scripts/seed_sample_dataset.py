@@ -222,13 +222,13 @@ def seed_dataset(base_dir: Path, counts: dict):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Seed sample dataset for StockMind AI CV")
-    parser.add_argument("--data-dir", type=str, default="data", help="Root data directory")
+    parser.add_argument("--data-dir", type=str, default="computer_vision/data", help="Root data directory")
     parser.add_argument("--train-count", type=int, default=30, help="Jumlah gambar train")
     parser.add_argument("--val-count", type=int, default=8, help="Jumlah gambar val")
     parser.add_argument("--test-count", type=int, default=8, help="Jumlah gambar test")
     args = parser.parse_args()
 
-    project_root = Path(__file__).resolve().parent.parent
+    project_root = Path(__file__).resolve().parent.parent.parent
     target_data_dir = project_root / args.data_dir
 
     counts = {
