@@ -1,0 +1,25 @@
+{
+  "include": [
+    "scripts",
+    "tests",
+    "computer_vision",
+    "notebooks"
+  ],
+  "exclude": [
+    ".venv",
+    "**/__pycache__",
+    "data",
+    "results",
+    "models"
+  ],
+  "venvPath": "C:\\laragon\\www\\Agentic-AI-Supply-Chain\\stockmind-ai",
+  "venv": ".venv",
+  "extraPaths": [
+    "C:\\laragon\\www\\Agentic-AI-Supply-Chain\\stockmind-ai",
+    "C:\\Users\\rendi\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages"
+  ],
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none",
+  "pythonVersion": "3.11",
+  "pythonPlatform": "Windows"
+}

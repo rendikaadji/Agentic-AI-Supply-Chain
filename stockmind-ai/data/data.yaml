@@ -1,0 +1,11 @@
+# StockMind AI - Warehouse Cardboard Box Detection Dataset
+# Vision Inventory Agent (Agent #2 in StockMind AI MAS Cycle)
+
+path: .
+train: data/train_images
+val: data/val_images
+test: data/test_images
+
+nc: 1
+names:
+  0: cardboard_box

@@ -1,0 +1,25 @@
+# Python Virtual Environment
+.venv/
+venv/
+env/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ultralytics & PyTorch caches
+*.cache
+data/*.cache
+yolov8n.pt
+
+# Intermediate training runs
+results/train/
+
+# IDE / Editor configuration
+.vscode/
+.idea/
+
+# OS specific
+Thumbs.db
+.DS_Store
