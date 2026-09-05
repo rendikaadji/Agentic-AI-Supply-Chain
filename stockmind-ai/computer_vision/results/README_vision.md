@@ -8,7 +8,7 @@
 > **STATUS MODEL: PROOF-OF-CONCEPT (PoC) / PIPELINE PLACEHOLDER**  
 > Bobot model `best.pt` saat ini dilatih menggunakan **dataset sintetis sampel rak gudang** (46 citra) untuk memvalidasi fungsionalitas pipeline *end-to-end* (data loading, training, evaluasi, export, dan kontrak Lambda).  
 > **Akurasi mAP50 99.5% adalah baseline sintetis dan belum merepresentasikan kondisi operasional nyata.**  
-> Begitu dataset Roboflow asli (500+ citra gudang riil, variasi sudut, kardus penyot/rusak, dan pencahayaan dinamis) tersedia, pipeline ini harus dijalankan ulang (*retrained*) menggunakan `scripts/train_yolov8.py` untuk menghasilkan bobot produksi final.
+> Begitu dataset Roboflow asli (500+ citra gudang riil, variasi sudut, kardus penyot/rusak, dan pencahayaan dinamis) tersedia, pipeline ini harus dijalankan ulang (*retrained*) menggunakan `computer_vision/scripts/train_yolov8.py` untuk menghasilkan bobot produksi final.
 
 ---
 
@@ -50,7 +50,7 @@ Model computer vision yang dikembangkan mendeteksi keberadaan dan kuantitas kota
 
 ## 3. Metrik Akurasi & Evaluasi
 
-Hasil evaluasi tersimpan di [results/model_evaluation_epoch50.csv](file:///c:/laragon/www/Agentic-AI-Supply-Chain/stockmind-ai/results/model_evaluation_epoch50.csv) dan kurva visual di `results/eval_plots/`:
+Hasil evaluasi tersimpan di [model_evaluation_epoch50.csv](file:///c:/laragon/www/Agentic-AI-Supply-Chain/stockmind-ai/computer_vision/results/model_evaluation_epoch50.csv) dan kurva visual di `computer_vision/results/eval_plots/`:
 
 | Metrik | Target Spek | Hasil Uji Test Split (50 Epoch) | Status |
 |---|---|---|---|
@@ -60,12 +60,12 @@ Hasil evaluasi tersimpan di [results/model_evaluation_epoch50.csv](file:///c:/la
 | **Recall** | - | **100.00%** | **`[PASS]`** |
 | **Ukuran File Model** | $< 50.0$ MB | **5.96 MB** | **`[PASS]`** |
 | **Inference Latency** | $< 500$ ms | **39.3 – 47.0 ms** (CPU) | **`[PASS]`** |
-| **Artifact Output** | `best.pt` | Tersedia di `models/weights/best.pt` | **`[READY]`** |
+| **Artifact Output** | `best.pt` | Tersedia di `computer_vision/models/best.pt` | **`[READY]`** |
 
 
 *Catatan Validasi & Roadmap:*
 - **Baseline Sintetis:** Nilai mAP50 99.50% diperoleh pada dataset sintetis seeder (kondisi bentuk rak dan kardus teratur). Ini membuktikan bahwa algoritma feature extraction, loss convergence, dan bounding box decoding berfungsi sempurna tanpa bug.
-- **Rencana Retraining Produksi:** Begitu dataset Roboflow asli (500+ citra gudang riil) diunduh, model ini akan dilatih ulang menggunakan `scripts/train_yolov8.py` untuk mengukur generalisasi pada variasi kardus kusut, bayangan dinamis, dan lorong gelap.
+- **Rencana Retraining Produksi:** Begitu dataset Roboflow asli (500+ citra gudang riil) diunduh, model ini akan dilatih ulang menggunakan `computer_vision/scripts/train_yolov8.py` untuk mengukur generalisasi pada variasi kardus kusut, bayangan dinamis, dan lorong gelap.
 - **Diagnostik Tuning:** Jika akurasi pada data riil Roboflow nantinya berada di bawah 85%, pipeline telah dilengkapi diagnosa otomatis (rekomendasi peningkatan epoch ke 100, penambahan variasi sudut kamera nyata, dan mosaic augmentation).
 
 
@@ -74,36 +74,36 @@ Hasil evaluasi tersimpan di [results/model_evaluation_epoch50.csv](file:///c:/la
 ## 4. Lokasi Artefak & Reproducibility
 
 ### A. Lokasi File
-- **Weights Lokal:** `models/weights/best.pt` (dan `models/weights/last.pt`)
+- **Weights Lokal:** `computer_vision/models/best.pt` (dan `computer_vision/models/last.pt`)
 - **Target S3 Bucket:** `s3://stockmind-models/yolov8n/best.pt`
-- **Konfigurasi Dataset:** `data/data.yaml`
-- **Laporan Validasi Dataset:** `results/data_validation_report.txt`
+- **Konfigurasi Dataset:** `computer_vision/data/data.yaml`
+- **Laporan Validasi Dataset:** `computer_vision/results/data_validation_report.txt`
 
 ### B. Cara Mereproduksi Training & Evaluasi
 
 1. **Validasi Dataset**:
    ```bash
-   py -3.11 scripts/validate_dataset.py --data-dir data --yaml-file data/data.yaml
+   py -3.11 computer_vision/scripts/validate_dataset.py
    ```
 
 2. **Training Model**:
    - *Via Script Utama:*
      ```bash
-     py -3.11 scripts/train_yolov8.py --epochs 50 --batch 8 --imgsz 640
+     py -3.11 computer_vision/scripts/train_yolov8.py --epochs 50 --batch 8 --imgsz 640
      ```
    - *Via Entrypoint Alternatif:*
      ```bash
-     py -3.11 notebooks/01_yolo8_training.py --epochs 50 --batch 8
+     py -3.11 computer_vision/notebooks/01_yolo8_training.py --epochs 50 --batch 8
      ```
 
 3. **Evaluasi Akurasi**:
    ```bash
-   py -3.11 scripts/evaluate_model.py --model models/weights/best.pt --split test
+   py -3.11 computer_vision/scripts/evaluate_model.py --model computer_vision/models/best.pt --split test
    ```
 
 4. **Uji Inferensi Cepat (CLI)**:
    ```bash
-   py -3.11 scripts/inference.py --image data/test_images/warehouse_box_test_0001.jpg
+   py -3.11 computer_vision/scripts/inference.py --image computer_vision/data/test_images/warehouse_box_test_0001.jpg
    ```
 
 ---
@@ -113,7 +113,7 @@ Hasil evaluasi tersimpan di [results/model_evaluation_epoch50.csv](file:///c:/la
 ### A. Integrasi AWS Lambda
 Script inferensi telah didesain khusus agar ultra-ringan dan portabel di environment AWS Lambda.
 
-- **File Entrypoint:** `scripts/inference.py` atau `computer_vision/inference/lambda_handler.py`.
+- **File Entrypoint:** `computer_vision/scripts/inference.py` atau `computer_vision/inference/lambda_handler.py`.
 - **Fungsi Handler:** `lambda_handler(event, context)`.
 
 #### Payload Request (API Gateway / EventBridge):

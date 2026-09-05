@@ -18,14 +18,14 @@ from pathlib import Path
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Evaluasi Model YOLOv8n untuk StockMind AI")
-    parser.add_argument("--model", type=str, default="models/weights/best.pt", help="Path ke weights model (best.pt)")
-    parser.add_argument("--data", type=str, default="data/data.yaml", help="Path ke data.yaml")
+    parser.add_argument("--model", type=str, default="computer_vision/models/best.pt", help="Path ke weights model (best.pt)")
+    parser.add_argument("--data", type=str, default="computer_vision/data/data.yaml", help="Path ke data.yaml")
     parser.add_argument("--split", type=str, default="test", choices=["test", "val", "train"], help="Split evaluasi (default: test)")
     parser.add_argument("--imgsz", type=int, default=640, help="Ukuran resolusi citra")
     parser.add_argument("--conf", type=float, default=0.25, help="Confidence threshold")
     parser.add_argument("--iou", type=float, default=0.6, help="NMS IoU threshold")
-    parser.add_argument("--output-csv", type=str, default="results/model_evaluation_epoch50.csv", help="Path file output CSV")
-    parser.add_argument("--plots-dir", type=str, default="results/eval_plots", help="Direktori penyimpanan plot & confusion matrix")
+    parser.add_argument("--output-csv", type=str, default="computer_vision/results/model_evaluation_epoch50.csv", help="Path file output CSV")
+    parser.add_argument("--plots-dir", type=str, default="computer_vision/results/eval_plots", help="Direktori penyimpanan plot & confusion matrix")
     return parser.parse_args()
 
 def check_dependencies():
@@ -104,12 +104,23 @@ def provide_tuning_recommendations(map50: float, precision: float, recall: float
 
 def run_evaluation():
     args = parse_args()
-    project_root = Path(__file__).resolve().parent.parent
+    project_root = Path(__file__).resolve().parent.parent.parent
 
-    model_path = (project_root / args.model).resolve()
-    data_path = (project_root / args.data).resolve()
-    csv_path = (project_root / args.output_csv).resolve()
-    plots_dir = (project_root / args.plots_dir).resolve()
+    model_p = Path(args.model)
+    model_path = model_p if model_p.is_absolute() else (project_root / args.model).resolve()
+    if not model_path.exists() and (Path.cwd() / args.model).exists():
+        model_path = (Path.cwd() / args.model).resolve()
+
+    data_p = Path(args.data)
+    data_path = data_p if data_p.is_absolute() else (project_root / args.data).resolve()
+    if not data_path.exists() and (Path.cwd() / args.data).exists():
+        data_path = (Path.cwd() / args.data).resolve()
+
+    csv_p = Path(args.output_csv)
+    csv_path = csv_p if csv_p.is_absolute() else (project_root / args.output_csv).resolve()
+
+    plots_p = Path(args.plots_dir)
+    plots_dir = plots_p if plots_p.is_absolute() else (project_root / args.plots_dir).resolve()
 
     print("=================================================================")
     print("       STOCKMIND AI — MODEL EVALUATION PIPELINE (PHASE 1)       ")
@@ -219,7 +230,9 @@ def run_evaluation():
     print(f"\n[+] Hasil evaluasi CSV tersimpan di: {csv_path}")
 
     # Generate Visualisasi Prediksi pada Gambar Uji
-    test_img_dir = project_root / "data" / f"{args.split}_images"
+    test_img_dir = project_root / "computer_vision" / "data" / f"{args.split}_images"
+    if not test_img_dir.exists():
+        test_img_dir = project_root / "data" / f"{args.split}_images"
     if test_img_dir.exists():
         pred_out_dir = plots_dir / "predictions"
         saved = generate_prediction_visualizations(model, test_img_dir, pred_out_dir, conf=args.conf)

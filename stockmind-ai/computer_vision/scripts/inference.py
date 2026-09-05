@@ -27,7 +27,8 @@ from pathlib import Path
 from typing import Union, Dict, Any, List
 
 # Konfigurasi path default model (prioritas: ENV VAR -> /tmp/best.pt Lambda -> local path)
-DEFAULT_LOCAL_MODEL = str(Path(__file__).resolve().parent.parent / "models" / "weights" / "best.pt")
+_MODELS_DIR = Path(__file__).resolve().parent.parent / "models"
+DEFAULT_LOCAL_MODEL = str(_MODELS_DIR / "best.pt" if (_MODELS_DIR / "best.pt").exists() else _MODELS_DIR / "weights" / "best.pt")
 DEFAULT_MODEL_PATH = os.environ.get("MODEL_PATH", "/tmp/best.pt" if os.path.exists("/tmp/best.pt") else DEFAULT_LOCAL_MODEL)
 
 # Global model cache untuk Lambda Warm Start
