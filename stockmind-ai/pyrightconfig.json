@@ -1,0 +1,31 @@
+{
+  "include": [
+    "agents",
+    "backend",
+    "computer_vision",
+    "integrations",
+    "scripts",
+    "tests",
+    "notebooks"
+  ],
+  "exclude": [
+    ".venv",
+    "**/__pycache__",
+    "data",
+    "results",
+    "models"
+  ],
+  "venvPath": ".",
+  "venv": ".venv",
+  "extraPaths": [
+    ".",
+    "computer_vision",
+    "agents",
+    "backend",
+    "integrations"
+  ],
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none",
+  "pythonVersion": "3.11",
+  "pythonPlatform": "Windows"
+}

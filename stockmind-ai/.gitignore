@@ -1,0 +1,46 @@
+# Python Virtual Environment
+.venv/
+venv/
+env/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ultralytics & PyTorch caches
+*.cache
+data/*.cache
+computer_vision/data/*.cache
+yolov8n.pt
+
+# Intermediate training runs
+results/train/
+computer_vision/results/train/
+
+# IDE / Editor configuration
+.vscode/
+.idea/
+
+# OS specific
+Thumbs.db
+.DS_Store
+
+# Frontend / Node.js
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.local
+
+# Internal Prompting & Draft Documentation
+Prompt/
+**/Prompt/
+docs/Prompt/
