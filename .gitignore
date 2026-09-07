@@ -11,3 +11,7 @@ venv/
 Prompt/
 **/Prompt/
 docs/Prompt/
+
+# IDE & Editors
+.vscode/
+.idea/
