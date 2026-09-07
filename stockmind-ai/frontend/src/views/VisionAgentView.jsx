@@ -8,33 +8,28 @@ export default function VisionAgentView() {
   return (
     <div className="space-y-6">
       {/* Subsystem Banner Notice */}
-      <div className="p-4 sm:p-5 rounded-3xl bg-[#14141E] border border-[#242436] shadow-xl flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-2xl bg-[#CCFF00] text-black font-black flex items-center justify-center shadow-[0_0_15px_rgba(204,255,0,0.3)] shrink-0">
-            <CheckCircle2 className="w-5 h-5 stroke-[2.5]" />
+      <div className="p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900/60 to-emerald-950/40 border border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-3">
+          <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <CheckCircle2 className="w-4 h-4" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-black text-white uppercase tracking-wider text-sm font-display">
-                Subsistem Aktif: Pilar 2 (Agen Visi Inventaris)
-              </span>
-              <span className="text-xs text-[#CCFF00] hidden sm:inline">✦</span>
-            </div>
-            <span className="text-zinc-400 font-mono text-xs block sm:inline">
-              Target: Deteksi Kotak Kardus YOLOv8n &amp; Auto-Rekonsiliasi Stok Fisik
+            <span className="font-bold text-white">Active Subsystem: Pillar 2 (Vision Inventory Agent)</span>
+            <span className="text-slate-400 ml-2 font-mono">
+              Target: YOLOv8n Cardboard Box Detection &amp; Physical Stock Auto-Reconciliation
             </span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-          <span className="flex items-center gap-1.5 bg-[#101018] text-[#00F0FF] border border-[#00F0FF]/30 px-3 py-1.5 rounded-full font-bold">
-            <Cpu className="w-3.5 h-3.5 stroke-[2.5]" /> Pekerja CV Edge #01
+        <div className="flex items-center gap-4 text-slate-400 font-mono text-[11px]">
+          <span className="flex items-center gap-1 text-cyan-400">
+            <Cpu className="w-3.5 h-3.5" /> Edge CV Worker #01
           </span>
-          <span className="flex items-center gap-1.5 bg-[#101018] text-[#CCFF00] border border-[#CCFF00]/30 px-3 py-1.5 rounded-full font-bold">
-            <Database className="w-3.5 h-3.5 stroke-[2.5]" /> Sinkron DynamoDB: 0ms
+          <span className="flex items-center gap-1 text-emerald-400">
+            <Database className="w-3.5 h-3.5" /> DynamoDB Sync: 0ms lag
           </span>
-          <span className="flex items-center gap-1.5 bg-[#101018] text-[#FFD600] border border-[#FFD600]/30 px-3 py-1.5 rounded-full font-bold">
-            <Server className="w-3.5 h-3.5 stroke-[2.5]" /> SAP S/4HANA MM
+          <span className="flex items-center gap-1 text-purple-400">
+            <Server className="w-3.5 h-3.5" /> SAP S/4HANA MM Ready
           </span>
         </div>
       </div>
@@ -54,4 +49,3 @@ export default function VisionAgentView() {
     </div>
   );
 }
-

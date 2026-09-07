@@ -1,7 +1,7 @@
 # Vision Inventory Agent (Pilar 2) — Technical Report & Testing Guide
 
 Dokumentasi lengkap dan panduan pengujian subsystem Computer Vision telah tersedia di:
-👉 **[computer_vision/README.md](../computer_vision/README.md)**
+- **[computer_vision/README.md](../computer_vision/README.md)**
 
 ### Ringkasan Teknis:
 - **Model:** YOLOv8n (`nano`) — Single class: `cardboard_box`

@@ -1,8 +1,11 @@
 {
   "include": [
+    "agents",
+    "backend",
+    "computer_vision",
+    "integrations",
     "scripts",
     "tests",
-    "computer_vision",
     "notebooks"
   ],
   "exclude": [
@@ -12,12 +15,14 @@
     "results",
     "models"
   ],
-  "venvPath": "C:\\laragon\\www\\Agentic-AI-Supply-Chain\\stockmind-ai",
+  "venvPath": ".",
   "venv": ".venv",
   "extraPaths": [
-    "C:\\laragon\\www\\Agentic-AI-Supply-Chain\\stockmind-ai",
-    "C:\\laragon\\www\\Agentic-AI-Supply-Chain\\stockmind-ai\\computer_vision",
-    "C:\\Users\\rendi\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages"
+    ".",
+    "computer_vision",
+    "agents",
+    "backend",
+    "integrations"
   ],
   "reportMissingImports": "none",
   "reportMissingModuleSource": "none",

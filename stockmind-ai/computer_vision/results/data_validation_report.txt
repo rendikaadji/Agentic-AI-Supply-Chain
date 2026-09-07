@@ -3,7 +3,7 @@
            Subsystem: Vision Inventory Agent (Cardboard Box Detection)          
 ================================================================================
 Status Validasi Keseluruhan : [PASS] VALID
-Lokasi Dataset              : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data
+Lokasi Dataset              : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data
 Konfigurasi data.yaml       : Ditemukan
 Daftar Kelas (Classes)      : {0: 'cardboard_box'}
 --------------------------------------------------------------------------------
@@ -18,8 +18,8 @@ RINGKASAN METRIK GLOBAL:
 DETAIL PER SPLIT:
 
 [Split: TRAIN]
-  - Folder Citra         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\train_images
-  - Folder Label         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\train_labels
+  - Folder Citra         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\train_images
+  - Folder Label         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\train_labels
   - Jumlah Citra         : 30 (65.2% dari total)
   - Total Bounding Box   : 137 (avg 4.57/citra)
   - Citra Korup          : 0
@@ -34,8 +34,8 @@ DETAIL PER SPLIT:
       * Height (min/avg/max): 0.1094 / 0.1588 / 0.2031
 
 [Split: VAL]
-  - Folder Citra         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\val_images
-  - Folder Label         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\val_labels
+  - Folder Citra         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\val_images
+  - Folder Label         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\val_labels
   - Jumlah Citra         : 8 (17.4% dari total)
   - Total Bounding Box   : 45 (avg 5.62/citra)
   - Citra Korup          : 0
@@ -50,8 +50,8 @@ DETAIL PER SPLIT:
       * Height (min/avg/max): 0.1094 / 0.1512 / 0.2031
 
 [Split: TEST]
-  - Folder Citra         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\test_images
-  - Folder Label         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\test_labels
+  - Folder Citra         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\test_images
+  - Folder Label         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\test_labels
   - Jumlah Citra         : 8 (17.4% dari total)
   - Total Bounding Box   : 40 (avg 5.00/citra)
   - Citra Korup          : 0

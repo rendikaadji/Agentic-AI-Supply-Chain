@@ -1,0 +1,24 @@
+# ==============================================================================
+# StockMind AI - Python Dependencies Specification
+# Track: Intelligent Supply Chain (Sokrates x AWS x SAP Partner - Hackathon 2026)
+# ==============================================================================
+
+# Core Deep Learning & Computer Vision Subsystem (Pilar 2: YOLOv8)
+ultralytics>=8.0.0
+torch>=2.0.0
+torchvision>=0.15.0
+opencv-python>=4.8.0
+Pillow>=10.0.0
+PyYAML>=6.0.0
+
+# Backend REST API Subsystem & Data Contracts
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+pydantic>=2.6.0
+
+# Autonomous Agentic Orchestrator & Integrations
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Optional AI Provider (Aktifkan jika menggunakan mode provider GEMINI di .env)
+google-generativeai>=0.8.0

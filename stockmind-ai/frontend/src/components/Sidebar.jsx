@@ -10,86 +10,63 @@ import {
   Cpu, 
   Database, 
   Server, 
+  CheckCircle2,
   Layers,
-  Radio,
-  X,
-  Sparkles
+  Radio
 } from 'lucide-react';
 
-export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose }) {
+export default function Sidebar({ activeTab, setActiveTab }) {
   const menuItems = [
-    { id: 'overview', label: 'Ringkasan Eksekutif', icon: LayoutDashboard, color: '#CCFF00' },
-    { id: 'vision', label: 'Agen Visi Komputer', icon: Eye, active: true, tag: 'Fase 1', color: '#00F0FF' },
-    { id: 'demand', label: 'Deteksi Permintaan', icon: TrendingUp, color: '#FFD600' },
-    { id: 'reconciliation', label: 'Rekonsiliasi Stok', icon: RefreshCcw, color: '#8A2BE2' },
-    { id: 'procurement', label: 'Pengadaan Otonom', icon: ShoppingCart, color: '#FF3366' },
-    { id: 'logistics', label: 'Logistik & Armada', icon: Truck, color: '#CCFF00' },
-    { id: 'settings', label: 'Pengaturan Sistem', icon: Settings, color: '#A855F7' },
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'vision', label: 'Vision Agent', icon: Eye, active: true, tag: 'Phase 1' },
+    { id: 'demand', label: 'Demand Sensing', icon: TrendingUp },
+    { id: 'reconciliation', label: 'Stock Reconciliation', icon: RefreshCcw },
+    { id: 'procurement', label: 'Procurement', icon: ShoppingCart },
+    { id: 'logistics', label: 'Logistics', icon: Truck },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-  const systemSkills = [
-    { name: 'SAP S/4HANA', short: 'SAP', status: 'Terhubung', color: '#00F0FF', ping: '24ms' },
-    { name: 'AWS Bedrock', short: 'AI', status: 'Aktif', color: '#A855F7', ping: 'Sonnet' },
-    { name: 'DynamoDB', short: 'DB', status: 'Siap', color: '#CCFF00', ping: '0ms' },
+  const systemStatuses = [
+    { name: 'AI Engine', status: 'Ollama LIVE', icon: Cpu, color: 'text-emerald-400', dot: 'bg-emerald-400' },
+    { name: 'Vision CV', status: 'YOLOv8 READY', icon: Eye, color: 'text-emerald-400', dot: 'bg-emerald-400' },
+    { name: 'SAP S/4HANA', status: 'BAPI Mock', icon: Server, color: 'text-cyan-400', dot: 'bg-cyan-400' },
+    { name: 'AWS Cloud', status: 'Phase 2', icon: Database, color: 'text-amber-400', dot: 'bg-amber-400' },
   ];
 
-  const sidebarContent = (
-    <div className="flex flex-col justify-between h-full bg-[#101018]">
+  return (
+    <aside className="w-64 bg-[#0B0F19]/90 backdrop-blur-xl border-r border-slate-800/80 flex flex-col justify-between shrink-0 h-screen sticky top-0 z-30">
       {/* Brand Header */}
-      <div className="p-4 sm:p-5 border-b border-[#20202F]">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-[#8A2BE2] via-[#5B21B6] to-[#CCFF00] p-0.5 shadow-[0_0_20px_rgba(138,43,226,0.35)]">
-                <div className="w-full h-full bg-[#101018] rounded-[14px] flex items-center justify-center">
-                  <Layers className="w-5 h-5 text-[#CCFF00]" />
-                </div>
-              </div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#CCFF00] border-2 border-[#101018] rounded-full"></span>
+      <div className="p-5 border-b border-slate-800/60">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <Layers className="w-5 h-5 text-slate-950 stroke-[2.5]" />
             </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <h1 className="font-black text-base sm:text-lg tracking-tight text-white font-display">
-                  StockMind<span className="text-[#CCFF00]">.AI</span>
-                </h1>
-                <span className="px-1.5 py-0.5 text-[9px] font-black bg-[#CCFF00]/15 text-[#CCFF00] border border-[#CCFF00]/30 rounded-full">
-                  v1.0
-                </span>
-              </div>
-              <p className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">
-                Rantai Pasok Otonom
-              </p>
-            </div>
+            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-[#0B0F19] rounded-full animate-pulse"></span>
           </div>
-
-          {/* Close button on mobile drawer */}
-          {onClose && (
-            <button
-              onClick={onClose}
-              className="lg:hidden w-8 h-8 rounded-full bg-[#181826] hover:bg-[#222233] border border-[#2D2D42] text-zinc-300 hover:text-white flex items-center justify-center cursor-pointer transition-all"
-              aria-label="Tutup Menu"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
+          <div>
+            <div className="flex items-center gap-1.5">
+              <h1 className="font-bold text-base tracking-tight text-white">StockMind<span className="text-cyan-400">.AI</span></h1>
+              <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 rounded">v1.0</span>
+            </div>
+            <p className="text-[11px] text-slate-400 font-medium truncate">Autonomous Supply Chain</p>
+          </div>
         </div>
 
         {/* Hackathon Badge */}
-        <div className="mt-3.5 px-3 py-1.5 rounded-full bg-[#181826] border border-[#242436] text-[11px] flex items-center justify-between text-zinc-300">
-          <span className="flex items-center gap-1.5 font-medium text-[11px]">
-            <Radio className="w-3 h-3 text-[#CCFF00] animate-pulse" />
+        <div className="mt-4 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] flex items-center justify-between text-slate-300">
+          <span className="flex items-center gap-1.5 text-slate-400">
+            <Radio className="w-3 h-3 text-cyan-400 animate-pulse" />
             Sokrates × AWS × SAP
           </span>
-          <span className="text-[9px] font-black bg-[#CCFF00] text-black px-2 py-0.5 rounded-full uppercase">
-            OTONOM
-          </span>
+          <span className="text-[10px] font-semibold text-emerald-400">Agentic</span>
         </div>
       </div>
 
       {/* Navigation Menu */}
       <nav className="p-3 space-y-1.5 overflow-y-auto flex-1">
-        <div className="px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-mono">
-          Pilar Multi-Agen
+        <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          Multi-Agent Pillars
         </div>
         {menuItems.map((item) => {
           const Icon = item.icon;
@@ -97,35 +74,27 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose }) {
           return (
             <button
               key={item.id}
-              onClick={() => {
-                setActiveTab(item.id);
-                onClose?.();
-              }}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm transition-all duration-200 cursor-pointer group ${
+              onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative ${
                 isSelected
-                  ? 'bg-[#181826] text-white font-black border border-[#CCFF00]/40 shadow-[0_0_20px_rgba(204,255,0,0.15)] translate-x-1'
-                  : 'text-zinc-400 hover:text-white hover:bg-[#151522] border border-transparent'
+                  ? 'bg-gradient-to-r from-cyan-500/15 via-emerald-500/10 to-transparent text-cyan-300 border border-cyan-500/30 shadow-lg shadow-cyan-950/40'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent'
               }`}
             >
+              {isSelected && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-gradient-to-b from-cyan-400 to-emerald-400 rounded-r-full shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
+              )}
+              
               <div className="flex items-center gap-3">
-                <div 
-                  className="w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
-                  style={{ 
-                    backgroundColor: isSelected ? `${item.color}25` : '#181824',
-                    color: item.color,
-                    border: `1px solid ${isSelected ? item.color : '#242436'}`
-                  }}
-                >
-                  <Icon className="w-4 h-4" />
-                </div>
+                <Icon className={`w-4 h-4 transition-colors ${isSelected ? 'text-cyan-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span>{item.label}</span>
               </div>
 
               {item.tag && (
-                <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border ${
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                   isSelected 
-                    ? 'bg-[#CCFF00] text-black border-[#CCFF00]' 
-                    : 'bg-[#181824] text-zinc-300 border-[#2D2D42]'
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse' 
+                    : 'bg-slate-800 text-slate-400'
                 }`}>
                   {item.tag}
                 </span>
@@ -135,63 +104,36 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose }) {
         })}
       </nav>
 
-      {/* Integration Connections Footer (Gaya Software Skills di referensi) */}
-      <div className="p-4 border-t border-[#20202F] bg-[#0E0E14] space-y-3">
-        <div className="flex items-center justify-between text-[11px] font-bold text-zinc-400 uppercase font-mono px-1">
-          <span>Koneksi Enterprise</span>
-          <span className="flex items-center gap-1 text-[10px] text-[#CCFF00] bg-[#CCFF00]/10 px-2 py-0.5 rounded-full border border-[#CCFF00]/30 font-bold">
-            AKTIF
+      {/* Integration Connections Footer */}
+      <div className="p-4 border-t border-slate-800/80 bg-slate-950/40 space-y-2.5">
+        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1">
+          <span>Runtime Status</span>
+          <span className="text-[10px] text-cyan-400 font-mono font-medium">
+            HYBRID LOCAL
           </span>
         </div>
 
-        {/* 3 Skill-like Icons */}
-        <div className="grid grid-cols-3 gap-2">
-          {systemSkills.map((sys, idx) => (
-            <div 
-              key={idx}
-              className="p-2 rounded-2xl bg-[#14141E] border border-[#242436] hover:border-zinc-500 transition-all flex flex-col items-center justify-center text-center group"
-            >
-              <div 
-                className="w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs mb-1 font-mono transition-transform group-hover:scale-105"
-                style={{ backgroundColor: `${sys.color}20`, color: sys.color, border: `1px solid ${sys.color}50` }}
+        <div className="space-y-1.5">
+          {systemStatuses.map((sys, idx) => {
+            const SysIcon = sys.icon;
+            return (
+              <div
+                key={idx}
+                className="flex items-center justify-between p-2 rounded-lg bg-slate-900/60 border border-slate-800 text-xs hover:border-slate-700 transition-colors"
               >
-                {sys.short}
+                <div className="flex items-center gap-2">
+                  <SysIcon className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="text-slate-300 font-medium text-[11px]">{sys.name}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-1.5 h-1.5 rounded-full ${sys.dot}`}></span>
+                  <span className={`text-[10px] font-mono font-bold ${sys.color}`}>{sys.status}</span>
+                </div>
               </div>
-              <span className="text-[10px] font-bold text-white truncate max-w-full">
-                {sys.name.split(' ')[0]}
-              </span>
-              <span className="text-[9px] font-mono text-zinc-400">
-                {sys.ping}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
-    </div>
-  );
-
-  return (
-    <>
-      {/* Desktop Persistent Sidebar */}
-      <aside className="hidden lg:flex w-64 border-r border-[#20202F] flex-col shrink-0 z-10 min-h-screen sticky top-0 h-screen">
-        {sidebarContent}
-      </aside>
-
-      {/* Mobile Slide-Over Drawer with Backdrop */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
-            onClick={onClose}
-          />
-
-          {/* Drawer Panel */}
-          <div className="relative w-72 max-w-[85vw] h-full shadow-2xl z-10 flex flex-col animate-in slide-in-from-left duration-200 border-r border-[#20202F]">
-            {sidebarContent}
-          </div>
-        </div>
-      )}
-    </>
+    </aside>
   );
 }

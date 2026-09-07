@@ -1,7 +1,13 @@
-# IDE & Editor
-.vscode/
-.idea/
-
-# OS specific
-.DS_Store
-Thumbs.db
+# Root .gitignore
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+Prompt/
+**/Prompt/
+docs/Prompt/

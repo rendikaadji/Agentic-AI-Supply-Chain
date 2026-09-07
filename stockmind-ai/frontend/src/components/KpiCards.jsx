@@ -3,136 +3,130 @@ import {
   AlertOctagon, 
   Clock, 
   CheckCheck, 
-  TrendingDown, 
-  ArrowUpRight,
-  Sparkles
+  BadgePercent, 
+  ArrowDownRight, 
+  ArrowUpRight, 
+  Sparkles,
+  Zap,
+  TrendingDown
 } from 'lucide-react';
 
 export default function KpiCards() {
   const cards = [
     {
-      title: 'Kejadian Stok Kosong',
+      title: 'Stockout Events',
       target: 'Turun 85%',
       current: '8 - 14 / kuartal',
       label: 'Target Penurunan',
       change: '-85.0%',
+      changeType: 'positive',
       icon: AlertOctagon,
-      accentColor: '#FF3366', // Sunset Coral
+      iconColor: 'text-rose-400',
+      iconBg: 'bg-rose-500/10',
+      borderColor: 'border-rose-500/20 hover:border-rose-500/40',
+      gradient: 'from-rose-500/5 to-transparent',
       progress: 85,
-      note: 'Mitigasi stok semu via Computer Vision',
+      note: 'Mitigasi phantom inventory via vision scanning',
     },
     {
-      title: 'Kecepatan Siklus P2P',
+      title: 'Procure-to-Pay Time',
       target: '< 3 Jam',
       current: '4 - 7 hari kerja',
       label: 'Kecepatan Siklus',
-      change: '97.2% Lebih Cepat',
+      change: '97.2% Cepat',
+      changeType: 'positive',
       icon: Clock,
-      accentColor: '#CCFF00', // Electric Lime
+      iconColor: 'text-cyan-400',
+      iconBg: 'bg-cyan-500/10',
+      borderColor: 'border-cyan-500/20 hover:border-cyan-500/40',
+      gradient: 'from-cyan-500/5 to-transparent',
       progress: 96,
-      note: 'Otomatisasi RFQ & SAP Ariba PoD',
+      note: 'Otomatisasi RFQ & SAP Ariba PoD matching',
     },
     {
-      title: 'Akurasi Stok (Fisik vs SAP)',
+      title: 'Stock Accuracy',
       target: '99.5%',
       current: '80% - 85% (Fisik vs SAP)',
       label: 'Presisi Inventaris',
       change: '+16.5% Akurasi',
+      changeType: 'positive',
       icon: CheckCheck,
-      accentColor: '#00F0FF', // Vivid Cyan
+      iconColor: 'text-emerald-400',
+      iconBg: 'bg-emerald-500/10',
+      borderColor: 'border-emerald-500/20 hover:border-emerald-500/40',
+      gradient: 'from-emerald-500/5 to-transparent',
       progress: 99.5,
-      note: 'YOLOv8 Edge + DynamoDB real-time',
+      note: 'YOLOv8 Edge inferensi + DynamoDB log realtime',
     },
     {
-      title: 'Efisiensi Logistik Masuk',
-      target: 'Hemat 24.1%',
-      current: 'Demurrage 19%',
+      title: 'Logistics Inbound Cost',
+      target: 'Hemat 22 - 25%',
+      current: 'Overhead demurrage 19%',
       label: 'Efisiensi Angkutan',
-      change: 'Hemat Rp 142.8M',
+      change: 'Hemat 24.1%',
+      changeType: 'positive',
       icon: TrendingDown,
-      accentColor: '#8A2BE2', // Cyber Purple
+      iconColor: 'text-purple-400',
+      iconBg: 'bg-purple-500/10',
+      borderColor: 'border-purple-500/20 hover:border-purple-500/40',
+      gradient: 'from-purple-500/5 to-transparent',
       progress: 78,
-      note: 'Rute multimoda dinamis mitigasi kongesti',
+      note: 'Dynamic multimodal route mitigasi kongesti dock',
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
       {cards.map((card, idx) => {
         const Icon = card.icon;
         return (
           <div
             key={idx}
-            className="bg-[#14141E] border border-[#242436] hover:border-[#34344E] rounded-3xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1.5 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] flex flex-col justify-between group relative overflow-hidden"
+            className={`relative overflow-hidden rounded-2xl bg-gradient-to-b ${card.gradient} bg-slate-900/60 border ${card.borderColor} p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-950/50 group`}
           >
-            {/* Subtle top glow line */}
-            <div 
-              className="absolute top-0 inset-x-8 h-[2px] opacity-40 group-hover:opacity-100 transition-opacity"
-              style={{ backgroundColor: card.accentColor }}
-            />
+            {/* Ambient subtle glow top-right */}
+            <div className="absolute -top-10 -right-10 w-24 h-24 bg-white/[0.03] rounded-full blur-xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
 
-            {/* Top Card Bar */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div 
-                  className="w-10 h-10 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110"
-                  style={{ 
-                    backgroundColor: `${card.accentColor}18`,
-                    border: `1px solid ${card.accentColor}40`,
-                    color: card.accentColor 
-                  }}
-                >
-                  <Icon className="w-5 h-5" />
-                </div>
-
-                <div className="w-7 h-7 rounded-full bg-[#181824] border border-[#242436] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-[#CCFF00] transition-colors">
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </div>
-              </div>
-
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
-                {card.title}
-              </span>
-
-              {/* Target Metric Value */}
-              <div className="text-3xl sm:text-4xl font-black text-white tracking-tight font-display mt-1">
-                {card.target}
-              </div>
-
-              {/* Kondisi Awal */}
-              <div className="flex items-center justify-between text-xs text-zinc-400 font-medium mt-2">
-                <span>Kondisi Awal:</span>
-                <span className="font-mono text-zinc-300 font-bold bg-[#181824] px-2.5 py-0.5 border border-[#262638] rounded-full text-[11px]">
-                  {card.current}
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <span className="text-xs font-medium text-slate-400 uppercase tracking-wider block">
+                  {card.title}
                 </span>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <h3 className="text-2xl font-black tracking-tight text-white font-mono">
+                    {card.target}
+                  </h3>
+                </div>
+              </div>
+
+              <div className={`p-2.5 rounded-xl ${card.iconBg} ${card.iconColor} border border-white/5`}>
+                <Icon className="w-5 h-5" />
               </div>
             </div>
 
-            {/* Progress Bar & Note */}
-            <div className="space-y-2.5 mt-5 pt-3 border-t border-[#1F1F2E]">
-              <div className="w-full bg-[#181824] border border-[#242436] rounded-full h-2.5 overflow-hidden p-0.5">
+            {/* Baseline comparison */}
+            <div className="pt-2 border-t border-slate-800/60 space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-400">Baseline Saat Ini:</span>
+                <span className="font-medium text-slate-300 font-mono">{card.current}</span>
+              </div>
+
+              {/* Progress bar indication */}
+              <div className="w-full bg-slate-800/80 rounded-full h-1.5 overflow-hidden">
                 <div 
-                  className="h-full rounded-full transition-all duration-1000"
-                  style={{ 
-                    width: `${card.progress}%`,
-                    backgroundColor: card.accentColor,
-                    boxShadow: `0 0 10px ${card.accentColor}60`
-                  }}
+                  className={`h-full rounded-full transition-all duration-1000 ${
+                    idx === 0 ? 'bg-rose-500' :
+                    idx === 1 ? 'bg-cyan-400' :
+                    idx === 2 ? 'bg-emerald-400' : 'bg-purple-400'
+                  }`}
+                  style={{ width: `${card.progress}%` }}
                 />
               </div>
 
-              <div className="flex items-center justify-between text-xs">
-                <span className="truncate max-w-[150px] text-[11px] text-zinc-500 font-medium">
-                  {card.note}
-                </span>
-                <span 
-                  className="inline-flex items-center gap-1 font-black font-mono text-[11px] px-2.5 py-0.5 rounded-full"
-                  style={{ 
-                    backgroundColor: `${card.accentColor}20`,
-                    color: card.accentColor,
-                    border: `1px solid ${card.accentColor}40`
-                  }}
-                >
+              <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                <span className="truncate max-w-[190px] text-slate-400">{card.note}</span>
+                <span className="inline-flex items-center gap-0.5 font-bold font-mono text-emerald-400">
+                  <ArrowUpRight className="w-3 h-3 stroke-[2.5]" />
                   {card.change}
                 </span>
               </div>
