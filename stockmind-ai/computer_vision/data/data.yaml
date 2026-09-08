@@ -1,7 +1,7 @@
 names:
   0: cardboard_box
 nc: 1
-path: C:/laragon/www/Agentic-AI-Supply-Chain/stockmind-ai/computer_vision/data
+path: .
 roboflow:
   license: CC BY 4.0
   project: cardboard-box-detection-rjrm9
