@@ -111,7 +111,7 @@ Evaluasi dijalankan menggunakan [`evaluate_model.py`](file:///c:/laragon/www/Age
 ## 5. Panduan Menjalankan Training & Evaluasi
 
 ### A. Training Lokal (GPU) atau Google Colab
-Training final dijalankan lokal via `computer_vision/scripts/train_yolov8.py` (lihat Bagian 3 untuk hyperparameter). Notebook Colab [`notebooks/01_yolo8_training.ipynb`](file:///c:/laragon/www/Agentic-AI-Supply-Chain/stockmind-ai/computer_vision/notebooks/01_yolo8_training.ipynb) tersedia sebagai alternatif dengan konfigurasi yang sama (YOLOv8n vs YOLOv8s, dual-evaluation resmi vs bersih otomatis).
+Training final dijalankan lokal via `computer_vision/scripts/train_yolov8.py` (lihat Bagian 3 untuk hyperparameter). Notebook Colab [`computer_vision/notebooks/01_yolo8_training.ipynb`](../notebooks/01_yolo8_training.ipynb) tersedia sebagai alternatif dengan konfigurasi yang sama (YOLOv8n vs YOLOv8s, dual-evaluation resmi vs bersih otomatis).
 
 Contoh perintah training lokal:
 ```bash
