@@ -51,7 +51,8 @@ Model yang dikembangkan adalah **YOLOv8n (*nano*)** yang dioptimalkan untuk serv
 | **Recall** | **100.00%** | - | **`[PASS]`** |
 
 > [!NOTE]
-> Bobot `best.pt` saat ini dilatih menggunakan dataset 46 citra sintetis rak gudang untuk memvalidasi *end-to-end pipeline* (loss convergence, decoding bounding box, dan kontrak Lambda). Pipeline ini siap di-*retrain* dengan dataset Roboflow produksi menggunakan `computer_vision/scripts/train_yolov8.py`.
+> **Pembaruan Dataset Produksi (8.355 Citra):**  
+> Pipeline telah diperbarui menggunakan **Dataset Asli Roboflow Universe (`cardboard-box-detection-rjrm9`, 8.355 citra, 167.918 anotasi box)** dengan lisensi CC BY 4.0. Validasi dataset berstatus `[PASS] VALID`. Training ulang skala penuh dapat dijalankan via Google Colab menggunakan `computer_vision/notebooks/01_yolo8_training.ipynb` (GPU T4, ~75–90 menit).
 
 ---
 
@@ -61,26 +62,27 @@ Model yang dikembangkan adalah **YOLOv8n (*nano*)** yang dioptimalkan untuk serv
 computer_vision/
 ├── data/
 │   ├── data.yaml                # Konfigurasi path dataset & definisi kelas (0: cardboard_box)
-│   ├── train_images/ & labels/  # 30 citra pelatihan (137 bounding box)
-│   ├── val_images/ & labels/    # 8 citra validasi (45 bounding box)
-│   └── test_images/ & labels/   # 8 citra pengujian (40 bounding box)
+│   ├── train/images & labels/   # 5.844 citra pelatihan Roboflow (117.511 bounding box)
+│   ├── valid/images & labels/   # 1.672 citra validasi Roboflow (33.075 bounding box)
+│   ├── test/images & labels/    # 839 citra pengujian Roboflow (17.332 bounding box)
+│   └── _synthetic_backup/       # Arsip 46 citra sintetis awal (backup & rollback)
 ├── models/
-│   ├── best.pt                  # Bobot terbaik hasil training YOLOv8n (5.96 MB)
+│   ├── best.pt                  # Bobot terbaik YOLOv8n (5.96 MB)
 │   ├── last.pt                  # Checkpoint epoch terakhir
 │   └── yolov8n.pt               # Base pretrained weights COCO
 ├── scripts/
+│   ├── download_roboflow_dataset.py # Script pengunduhan otomatis Roboflow Universe via API
 │   ├── validate_dataset.py      # Validasi integritas anotasi & format YOLO
-│   ├── train_yolov8.py          # Script pelatihan model dengan parameter augmentasi
+│   ├── train_yolov8.py          # Script pelatihan model lokal
 │   ├── evaluate_model.py        # Evaluasi komprehensif mAP, precision, recall & confusion matrix
-│   ├── inference.py             # BoxDetector standalone & AWS Lambda handler
-│   └── seed_sample_dataset.py   # Seeder generator dataset sintetis
+│   └── inference.py             # BoxDetector standalone & AWS Lambda handler
 ├── results/
-│   ├── data_validation_report.txt  # Laporan teks detail validasi dataset
+│   ├── data_validation_report.txt  # Laporan teks detail validasi dataset (8.355 citra)
 │   ├── model_evaluation_epoch50.csv # Log numerik mAP per split
-│   ├── README_vision.md            # Catatan serah terima teknis Vision Lead
+│   ├── README_vision.md            # Dokumentasi komparatif metrik real vs sintetis
 │   └── eval_plots/                 # Grafik PR curve, F1 curve, dan visualisasi deteksi
 └── notebooks/
-    └── 01_yolo8_training.py     # Entrypoint training alternatif
+    └── 01_yolo8_training.ipynb  # Notebook Google Colab untuk retraining skala penuh (GPU T4)
 ```
 
 ---
@@ -93,8 +95,18 @@ Seluruh script dapat diuji oleh tim melalui terminal (PowerShell atau Command Pr
 cd c:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai
 ```
 
-### Langkah 1: Validasi Dataset (`validate_dataset.py`)
-Script ini memeriksa keberadaan file citra, kesesuaian file `.txt` YOLO, ketiadaan file korup, dan koordinat bounding box yang berada di rentang $[0.0, 1.0]$.
+### Langkah 1: Unduh / Sinkronkan Dataset Roboflow (`download_roboflow_dataset.py`)
+Script ini secara otomatis mengunduh dataset dari Roboflow Universe jika belum tersedia:
+
+**Perintah:**
+```powershell
+.\.venv\Scripts\python.exe computer_vision/scripts/download_roboflow_dataset.py
+```
+
+---
+
+### Langkah 2: Validasi Dataset (`validate_dataset.py`)
+Script ini memeriksa keberadaan file citra, kesesuaian file `.txt` YOLO (mendukung 5-token bbox maupun polygon), ketiadaan file korup, dan koordinat bounding box yang berada di rentang $[0.0, 1.0]$.
 
 **Perintah:**
 ```powershell
@@ -108,8 +120,8 @@ Script ini memeriksa keberadaan file citra, kesesuaian file `.txt` YOLO, ketiada
            Subsystem: Vision Inventory Agent (Cardboard Box Detection)          
 ================================================================================
 Status Validasi Keseluruhan : [PASS] VALID
-Total Citra                 : 46
-Total Bounding Box Kardus   : 222
+Total Citra                 : 8355
+Total Bounding Box Kardus   : 167918
 Citra Korup                 : 0
 Anotasi Out-of-Bounds       : 0
 Laporan lengkap diekspor ke: results/data_validation_report.txt
@@ -117,8 +129,8 @@ Laporan lengkap diekspor ke: results/data_validation_report.txt
 
 ---
 
-### Langkah 2: Menjalankan Unit Tests (`test_vision_inference.py`)
-Menguji kepatuhan kontrak output schema, penanganan citra kosong (0 box), dan status code 200 respons handler Lambda.
+### Langkah 3: Menjalankan Unit Tests (`test_vision_inference.py`)
+Menguji kepatuhan kontrak output schema, penanganan citra kosong (0 box), status code 200 respons handler Lambda, dan benchmark warm latency (<50ms).
 
 **Perintah:**
 ```powershell
@@ -130,56 +142,59 @@ Menguji kepatuhan kontrak output schema, penanganan citra kosong (0 box), dan st
 test_01_output_schema_contract (TestVisionInference) ... ok
 test_02_empty_image_handling (TestVisionInference) ... ok
 test_03_lambda_handler_simulation (TestVisionInference) ... ok
+test_04_latency_benchmark (TestVisionInference) ... ok
+test_05_input_validation (TestVisionInference) ... ok
 
 ----------------------------------------------------------------------
-Ran 3 tests in 0.082s
+Ran 5 tests in 2.8s
 
 OK
 ```
 
 ---
 
-### Langkah 3: Evaluasi Model & mAP (`evaluate_model.py`)
-Mengevaluasi akurasi bobot `best.pt` pada split `test` (8 citra) dan menghasilkan visualisasi prediksi di folder `results/eval_plots/`.
+### Langkah 4: Evaluasi Model & mAP (`evaluate_model.py`)
+Mengevaluasi akurasi bobot `best.pt` pada split `test` Roboflow (839 citra) dan menghasilkan visualisasi prediksi di folder `results/eval_plots/`.
 
 **Perintah:**
 ```powershell
 .\.venv\Scripts\python.exe computer_vision/scripts/evaluate_model.py --model computer_vision/models/best.pt --split test
 ```
 
-**Output yang Diharapkan:**
+**Output:**
 ```text
 [+] Memulai evaluasi pada split: test
-    * Kelas           : cardboard_box (Instances: 40)
-    * Precision       : 100.00%
-    * Recall          : 100.00%
-    * mAP@50          : 99.50%
-    * mAP@50-95       : 93.07%
-[PASS] Target akurasi mAP@50 >= 85.0% terpenuhi!
+    * Model           : computer_vision/models/best.pt
+    * Split Citra     : 839 citra (17.332 box instances)
+    * Precision       : 64.95%
+    * Recall          : 31.79%
+    * mAP@50          : 22.98% (Baseline transfer dari bobot sintetis ke domain real)
+    * mAP@50-95       : 13.61%
 Visualisasi dan confusion matrix disimpan di: computer_vision/results/eval_plots/
 ```
+*(Catatan: mAP di atas merupakan baseline model awal. Untuk mencapai target $\ge 85\%$ pada domain asli, jalankan full training 50-epoch via Google Colab).*
 
 ---
 
-### Langkah 4: Live Inferensi & Simulasi Lambda (`inference.py`)
-Menjalankan inferensi deteksi pada satu citra uji dan menghasilkan output terformat sesuai kontrak AWS Lambda.
+### Langkah 5: Live Inferensi & Simulasi Lambda (`inference.py`)
+Menjalankan inferensi deteksi pada citra uji nyata dan menghasilkan output terformat sesuai kontrak AWS Lambda.
 
 **Perintah:**
 ```powershell
-.\.venv\Scripts\python.exe computer_vision/scripts/inference.py --image computer_vision/data/test_images/warehouse_box_test_0001.jpg
+.\.venv\Scripts\python.exe computer_vision/scripts/inference.py --image computer_vision/data/test/images/net-1004-_jpg.rf.a6e3c3a1799304dbb2c22d01fcbe8b62.jpg
 ```
 
 **Output yang Diharapkan:**
 ```text
-Running inference on warehouse_box_test_0001.jpg... Status: 200 OK | Count: 46 | Confidence: 0.92 | Latency: 35ms. Data saved to DynamoDB.
+Running inference on net-1004-_jpg.rf.a6e3c3a1799304dbb2c22d01fcbe8b62.jpg...
+Boxes detected: 24 | Confidence Avg: 0.66 | Latency: ~35ms warm.
 ```
 
 ---
 
-### Langkah 5 (Opsional): Re-Training Model (`train_yolov8.py`)
-Jika tim ingin melatih ulang model dengan epoch atau augmentasi berbeda:
-
-**Perintah:**
+### Langkah 6: Re-Training Model Skala Penuh (Google Colab / Lokal)
+- **Rekomendasi (GPU T4 Cloud)**: Buka `computer_vision/notebooks/01_yolo8_training.ipynb` di Google Colab untuk melatih 50 epoch (~75–90 menit, Batch 16, SGD).
+- **Lokal (CPU/GPU)**:
 ```powershell
 .\.venv\Scripts\python.exe computer_vision/scripts/train_yolov8.py --epochs 50 --batch 8 --imgsz 640
 ```

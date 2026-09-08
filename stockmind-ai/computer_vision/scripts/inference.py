@@ -7,12 +7,14 @@ Deskripsi: Script inferensi deteksi kotak kardus (cardboard box) ultra-ringan
 Spesifikasi:
 - Bebas dependensi berat (tidak ada import training seperti matplotlib, pandas, roboflow).
 - Input: image bytes, numpy array, atau path file citra.
-- Output JSON terstandarisasi:
+- Output JSON deteksi mentah (BoxDetector.detect):
   {
     "boxes": [{"x": 0.5, "y": 0.6, "w": 0.2, "h": 0.3, "conf": 0.92}],
     "count": 3,
     "confidence_avg": 0.89
   }
+- Output JSON siap-konsumsi-agent (BoxDetector.detect_for_agent, dipakai lambda_handler & CLI):
+  lihat "Kontrak Output untuk Konsumsi Agent" di computer_vision/results/README_vision.md.
 - Target latensi < 500ms per citra.
 """
 
@@ -23,8 +25,9 @@ import json
 import time
 import base64
 import argparse
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Union, Dict, Any, List
+from typing import Union, Dict, Any, List, Optional
 
 # Konfigurasi path default model (prioritas: ENV VAR -> /tmp/best.pt Lambda -> local path)
 _MODELS_DIR = Path(__file__).resolve().parent.parent / "models"
@@ -33,6 +36,40 @@ DEFAULT_MODEL_PATH = os.environ.get("MODEL_PATH", "/tmp/best.pt" if os.path.exis
 
 # Global model cache untuk Lambda Warm Start
 _GLOBAL_MODEL = None
+
+def _get_stock_thresholds():
+    """Ambang batas status inventaris, dibaca fresh tiap panggilan agar bisa dikonfigurasi
+    tanpa ubah kode (env var), dan agar unit test bisa mengubahnya per-kasus."""
+    low = int(os.environ.get("LOW_STOCK_THRESHOLD", "10"))
+    critical = int(os.environ.get("CRITICAL_STOCK_THRESHOLD", "3"))
+    return low, critical
+
+
+def _compute_inventory_status(detected_count: int, low_threshold: int, critical_threshold: int):
+    if detected_count < critical_threshold:
+        return "CRITICAL", f"detected_count ({detected_count}) below configured CRITICAL threshold ({critical_threshold})"
+    if detected_count < low_threshold:
+        return "LOW", f"detected_count ({detected_count}) below configured LOW threshold ({low_threshold})"
+    return "NORMAL", f"detected_count ({detected_count}) at or above configured LOW threshold ({low_threshold})"
+
+
+def _build_summary_for_agent(count: int, confidence_avg: float, status: str, low_threshold: int, critical_threshold: int) -> str:
+    if count == 0:
+        return f"Tidak ada cardboard box yang terdeteksi pada frame ini. Status inventaris: {status}."
+
+    conf_pct = round(confidence_avg * 100)
+    if status == "NORMAL":
+        status_note = f"NORMAL (di atas ambang batas {low_threshold} unit)"
+    elif status == "LOW":
+        status_note = f"LOW (di bawah ambang batas {low_threshold} unit)"
+    else:
+        status_note = f"CRITICAL (di bawah ambang batas kritis {critical_threshold} unit)"
+
+    return (
+        f"Terdeteksi {count} unit cardboard box pada frame ini dengan rata-rata keyakinan {conf_pct}%. "
+        f"Status inventaris: {status_note}."
+    )
+
 
 def get_model(model_path: str = None):
     """
@@ -119,12 +156,43 @@ class BoxDetector:
             "confidence_avg": confidence_avg
         }
 
+    def detect_for_agent(self, image_input: Union[bytes, str, Path, Any], camera_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Deteksi + kontrak output siap-konsumsi-agent (Stock Reconciliation Agent / Bedrock Agent).
+        Lihat "Kontrak Output untuk Konsumsi Agent" di computer_vision/results/README_vision.md.
+        """
+        t0 = time.time()
+        detection = self.detect(image_input)
+        inference_time_ms = round((time.time() - t0) * 1000, 2)
+
+        low_threshold, critical_threshold = _get_stock_thresholds()
+        status, status_reason = _compute_inventory_status(detection["count"], low_threshold, critical_threshold)
+        summary = _build_summary_for_agent(
+            detection["count"], detection["confidence_avg"], status, low_threshold, critical_threshold
+        )
+
+        return {
+            "detection": detection,
+            "inventory_status": {
+                "sku": "CARDBOARD_BOX",
+                "detected_count": detection["count"],
+                "status": status,
+                "status_reason": status_reason,
+            },
+            "metadata": {
+                "camera_id": camera_id,
+                "timestamp_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "model_version": os.environ.get("MODEL_VERSION", "yolov8s-v2-roboflow"),
+                "inference_time_ms": inference_time_ms,
+            },
+            "summary_for_agent": summary,
+        }
+
 def lambda_handler(event: Dict[str, Any], context: Any = None) -> Dict[str, Any]:
     """
     AWS Lambda Handler entry point untuk integrasi Backend Lead.
     Menerima base64 encoded image dari API Gateway atau event S3.
     """
-    start_time = time.time()
     try:
         # 1. Ekstraksi payload gambar
         body = event.get("body", event)
@@ -135,11 +203,13 @@ def lambda_handler(event: Dict[str, Any], context: Any = None) -> Dict[str, Any]
                 pass
 
         image_bytes = None
+        camera_id = None
         if isinstance(body, dict):
             if "image_base64" in body:
                 image_bytes = base64.b64decode(body["image_base64"])
             elif "image" in body:
                 image_bytes = base64.b64decode(body["image"])
+            camera_id = body.get("camera_id")
         elif isinstance(body, bytes):
             image_bytes = body
 
@@ -150,12 +220,9 @@ def lambda_handler(event: Dict[str, Any], context: Any = None) -> Dict[str, Any]
                 "body": json.dumps({"error": "Payload gambar tidak ditemukan. Kirimkan JSON {'image_base64': '...'}"})
             }
 
-        # 2. Eksekusi deteksi
+        # 2. Eksekusi deteksi + pengayaan kontrak agent
         detector = BoxDetector()
-        result = detector.detect(image_bytes)
-
-        elapsed_ms = round((time.time() - start_time) * 1000, 2)
-        result["latency_ms"] = elapsed_ms
+        result = detector.detect_for_agent(image_bytes, camera_id=camera_id)
 
         return {
             "statusCode": 200,
@@ -178,6 +245,8 @@ def main():
     parser.add_argument("--image", type=str, required=True, help="Path ke file citra input")
     parser.add_argument("--model", type=str, default=None, help="Path ke file best.pt")
     parser.add_argument("--conf", type=float, default=0.25, help="Confidence threshold (default: 0.25)")
+    parser.add_argument("--camera-id", type=str, default=None, help="Camera ID opsional untuk metadata")
+    parser.add_argument("--raw", action="store_true", help="Cetak output deteksi mentah (tanpa pengayaan kontrak agent)")
     args = parser.parse_args()
 
     img_path = Path(args.image)
@@ -185,17 +254,13 @@ def main():
         print(json.dumps({"error": f"File gambar tidak ditemukan: {img_path}"}))
         sys.exit(1)
 
-    t0 = time.time()
     detector = BoxDetector(model_path=args.model, conf_threshold=args.conf)
-    result = detector.detect(img_path)
-    t_elapsed = (time.time() - t0) * 1000
+    if args.raw:
+        result = detector.detect(img_path)
+    else:
+        result = detector.detect_for_agent(img_path, camera_id=args.camera_id)
 
-    # Output JSON standar sesuai spesifikasi kontrak
-    output_json = json.dumps(result, indent=2)
-    print(output_json)
-
-    # Info latensi untuk verifikasi target < 500ms
-    sys.stderr.write(f"\n[INFO] Inference latency: {t_elapsed:.2f} ms (Target Lambda: < 500 ms)\n")
+    print(json.dumps(result, indent=2))
 
 if __name__ == "__main__":
     main()

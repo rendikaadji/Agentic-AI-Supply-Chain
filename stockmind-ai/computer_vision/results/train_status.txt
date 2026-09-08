@@ -1,0 +1,4 @@
+training_started_at=2026-09-08T00:06:24+07:00
+yolov8n_status=SUCCESS (100 epochs, no early stop, best.pt at epoch 99)
+yolov8s_status=SUCCESS (crashed once at epoch 37 due to concurrent-process RAM exhaustion, resumed with --workers 4, completed 100 epochs total, no early stop)
+training_finished_at=2026-09-08T12:41:42+07:00

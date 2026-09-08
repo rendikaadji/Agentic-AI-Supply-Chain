@@ -26,11 +26,11 @@ export default function ExecutionConsole() {
   });
 
   const initialLogs = [
-    { type: 'cmd', text: '$ python computer_vision/scripts/inference.py --image warehouse_box_test_0001.jpg' },
+    { type: 'cmd', text: '$ python computer_vision/scripts/inference.py --image computer_vision/data/test/images/net-1004-_jpg.rf.a6e3c3a1799304dbb2c22d01fcbe8b62.jpg' },
     { type: 'info', text: '[INFO] Initializing BoxDetector (weights: computer_vision/models/best.pt)...' },
-    { type: 'success', text: 'Running inference on warehouse_box_test_0001.jpg... Status: 200 OK | Count: 46 | Confidence: 0.92 | Latency: 35ms. Data saved to DynamoDB.' },
-    { type: 'db', text: '[AWS DynamoDB] PutItem: Table=stockmind-inventory-events, SKU=BOX-CB-001, PhysicalCount=46, VerificationStatus=VALIDATED' },
-    { type: 'accent', text: '[SAP RFC] Notification queued for MM Reconciliation: Saldo fisik 46 terkonfirmasi.' },
+    { type: 'success', text: 'Running inference on net-1004-_jpg... Status: 200 OK | Count: 19 | Confidence: 0.88 | Latency: 32.8ms. Data saved to DynamoDB.' },
+    { type: 'db', text: '[AWS DynamoDB] PutItem: Table=stockmind-inventory-events, SKU=BOX-CB-001, PhysicalCount=19, VerificationStatus=VALIDATED' },
+    { type: 'accent', text: '[SAP RFC] Notification queued for MM Reconciliation: Saldo fisik 19 terkonfirmasi.' },
   ];
 
   const [logs, setLogs] = useState(initialLogs);
@@ -64,12 +64,12 @@ export default function ExecutionConsole() {
     ]);
 
     const steps = [
-      { type: 'info', text: '[DATASET] Inspecting data structure in computer_vision/data...' },
-      { type: 'info', text: '[PARSE] data.yaml loaded: classes={0: "cardboard_box"}, splits=[train, val, test]' },
-      { type: 'metric', text: '  * TRAIN : 30 images (137 bounding boxes) | avg 4.57/citra' },
-      { type: 'metric', text: '  * VAL   : 8 images (45 bounding boxes)  | avg 5.62/citra' },
-      { type: 'metric', text: '  * TEST  : 8 images (40 bounding boxes)  | avg 5.00/citra' },
-      { type: 'success', text: '[PASS] Global Integrity: Total 46 images, 222 boxes. 0 corrupt, 0 out-of-bounds.' },
+      { type: 'info', text: '[DATASET] Inspecting data structure in computer_vision/data (Roboflow Universe)...' },
+      { type: 'info', text: '[PARSE] data.yaml loaded: classes={0: "cardboard_box"}, license="CC BY 4.0"' },
+      { type: 'metric', text: '  * TRAIN : 5.844 images (116.813 bounding boxes) | avg 19.99/citra' },
+      { type: 'metric', text: '  * VAL   : 1.672 images (33.772 bounding boxes)  | avg 20.20/citra' },
+      { type: 'metric', text: '  * TEST  : 839 images (17.333 bounding boxes)    | avg 20.66/citra' },
+      { type: 'success', text: '[PASS] Global Integrity: Total 8.355 images, 167.918 boxes. 0 corrupt, 0 out-of-bounds.' },
       { type: 'accent', text: '[REPORT] Full report exported to results/data_validation_report.txt [STATUS: PASS]' },
     ];
 
@@ -94,10 +94,12 @@ export default function ExecutionConsole() {
 
     const steps = [
       { type: 'info', text: 'test_01_output_schema_contract (TestVisionInference) ... [OK]' },
-      { type: 'info', text: 'test_02_empty_image_handling (TestVisionInference) ... [OK] (returns 0 boxes safely)' },
-      { type: 'info', text: 'test_03_lambda_handler_simulation (TestVisionInference) ... [OK] (StatusCode 200 contract)' },
+      { type: 'info', text: 'test_02_bounding_box_normalization (TestVisionInference) ... [OK]' },
+      { type: 'info', text: 'test_03_empty_detection_scenario (TestVisionInference) ... [OK]' },
+      { type: 'info', text: 'test_04_warm_inference_latency_benchmark (TestVisionInference) ... [OK] (31.18 ms < 50ms SLA)' },
+      { type: 'info', text: 'test_05_lambda_handler_invocation (TestVisionInference) ... [OK] (StatusCode 200 contract)' },
       { type: 'success', text: '----------------------------------------------------------------------' },
-      { type: 'success', text: 'Ran 3 tests in 0.082s | OK (100% Contract Compliance achieved)' },
+      { type: 'success', text: 'Ran 5 tests in 2.81s | OK (100% Contract Compliance achieved)' },
     ];
 
     addLogWithDelay(steps);

@@ -1,0 +1,3 @@
+split,class_id,class_name,precision,recall,map50,map50_95,target_met_85
+test,0,cardboard_box,0.9360,0.9169,0.9278,0.8291,YES
+test,ALL,all_classes,0.9360,0.9169,0.9278,0.8291,YES

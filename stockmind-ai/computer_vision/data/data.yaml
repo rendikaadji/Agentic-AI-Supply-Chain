@@ -1,11 +1,13 @@
-# StockMind AI - Warehouse Cardboard Box Detection Dataset
-# Vision Inventory Agent (Agent #2 in StockMind AI MAS Cycle)
-
-path: computer_vision/data
-train: train_images
-val: val_images
-test: test_images
-
-nc: 1
 names:
   0: cardboard_box
+nc: 1
+path: C:/laragon/www/Agentic-AI-Supply-Chain/stockmind-ai/computer_vision/data
+roboflow:
+  license: CC BY 4.0
+  project: cardboard-box-detection-rjrm9
+  url: https://universe.roboflow.com/instance-segmentation-zza7a/cardboard-box-detection-rjrm9/dataset/1
+  version: 1
+  workspace: instance-segmentation-zza7a
+test: test/images
+train: train/images
+val: valid/images

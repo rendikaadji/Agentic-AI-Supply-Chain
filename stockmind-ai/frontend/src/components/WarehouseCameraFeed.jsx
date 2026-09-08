@@ -12,22 +12,25 @@ import {
   Maximize2
 } from 'lucide-react';
 
+import roboflowCameraData from '../data/cameraFeeds_complex.json';
+
 export default function WarehouseCameraFeed() {
+  const [datasetMode, setDatasetMode] = useState('roboflow'); // 'roboflow' (Real 8,355 images) or 'synthetic' (46 legacy)
   const [showBoxes, setShowBoxes] = useState(true);
   const [showConf, setShowConf] = useState(true);
   const [scanActive, setScanActive] = useState(true);
-  const [selectedCam, setSelectedCam] = useState('CAM-01');
+  const [selectedCam, setSelectedCam] = useState('CAM-02'); // Default to CAM-02 (Dense multi-tier complex scene)
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [latency, setLatency] = useState(34.8);
+  const [latency, setLatency] = useState(32.8);
 
-  // Exact real-world YOLOv8n (best.pt) inference bounding boxes
-  // Extracted directly from model.predict() on test images (640x640)
-  const cameraData = {
+  // Synthetic Archive Dataset (46 images legacy)
+  const syntheticCameraData = {
     'CAM-01': {
       image: '/warehouse_box_test_0001.jpg',
       zone: 'ZONE-A (Aisle A, Rack-04)',
       sku: 'BOX-CB-001',
-      batch: '#WH-2026-09-01',
+      batch: '#WH-SYNTHETIC-01',
+      source: 'Synthetic Backup (Initial 46 Images)',
       boxes: [
         { id: 'BOX-001', label: 'cardboard_box', conf: 0.98, top: 25.74, left: 12.82, width: 36.70, height: 12.73, color: 'emerald' },
         { id: 'BOX-002', label: 'cardboard_box', conf: 1.00, top: 24.05, left: 55.74, width: 32.61, height: 14.23, color: 'emerald' },
@@ -39,7 +42,8 @@ export default function WarehouseCameraFeed() {
       image: '/warehouse_box_test_0002.jpg',
       zone: 'ZONE-B (Aisle B, Pallet Bay)',
       sku: 'BOX-CB-001',
-      batch: '#WH-2026-09-02',
+      batch: '#WH-SYNTHETIC-02',
+      source: 'Synthetic Backup (Initial 46 Images)',
       boxes: [
         { id: 'BOX-001', label: 'cardboard_box', conf: 0.97, top: 25.38, left: 10.66, width: 24.86, height: 12.81, color: 'emerald' },
         { id: 'BOX-002', label: 'cardboard_box', conf: 1.00, top: 23.58, left: 42.66, width: 19.12, height: 14.56, color: 'emerald' },
@@ -52,7 +56,8 @@ export default function WarehouseCameraFeed() {
       image: '/warehouse_box_test_0003.jpg',
       zone: 'ZONE-C (Inbound Dock 02)',
       sku: 'BOX-CB-001',
-      batch: '#WH-2026-09-03',
+      batch: '#WH-SYNTHETIC-03',
+      source: 'Synthetic Backup (Initial 46 Images)',
       boxes: [
         { id: 'BOX-001', label: 'cardboard_box', conf: 1.00, top: 23.38, left: 17.57, width: 19.22, height: 14.70, color: 'emerald' },
         { id: 'BOX-002', label: 'cardboard_box', conf: 1.00, top: 24.63, left: 36.88, width: 18.98, height: 13.60, color: 'emerald' },
@@ -64,7 +69,8 @@ export default function WarehouseCameraFeed() {
     }
   };
 
-  const activeCam = cameraData[selectedCam] || cameraData['CAM-01'];
+  const currentDataset = datasetMode === 'roboflow' ? roboflowCameraData : syntheticCameraData;
+  const activeCam = currentDataset[selectedCam] || currentDataset['CAM-01'];
   const currentBoxes = activeCam.boxes;
 
   // Calculate real average confidence
@@ -75,9 +81,9 @@ export default function WarehouseCameraFeed() {
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => {
-      setLatency(Number((31 + Math.random() * 6).toFixed(1)));
+      setLatency(Number((30 + Math.random() * 5).toFixed(1)));
       setIsRefreshing(false);
-    }, 500);
+    }, 450);
   };
 
   return (
@@ -93,11 +99,18 @@ export default function WarehouseCameraFeed() {
           </div>
 
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-sm font-bold text-white tracking-tight">Warehouse Camera Feed</h3>
               <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-400 text-[10px] font-bold font-mono">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                 LIVE RTSP
+              </span>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono border ${
+                datasetMode === 'roboflow' 
+                  ? 'bg-cyan-500/15 border-cyan-500/30 text-cyan-300' 
+                  : 'bg-purple-500/15 border-purple-500/30 text-purple-300'
+              }`}>
+                {datasetMode === 'roboflow' ? 'Roboflow 8.355 Real Images' : 'Synthetic Backup (46 Images)'}
               </span>
             </div>
             <p className="text-[11px] text-slate-400 font-mono">
@@ -106,17 +119,44 @@ export default function WarehouseCameraFeed() {
           </div>
         </div>
 
-        {/* Camera Selector & Toggle Tools */}
-        <div className="flex items-center gap-2">
+        {/* Dataset Switcher & Camera Selector & Toggle Tools */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Dataset Switcher: Roboflow Real vs Synthetic Archive */}
+          <div className="flex items-center bg-slate-900 border border-slate-700/80 rounded-lg p-0.5 text-[11px] font-mono">
+            <button
+              onClick={() => setDatasetMode('roboflow')}
+              title="Gunakan Dataset Asli Roboflow Universe"
+              className={`px-2 py-1 rounded transition-all ${
+                datasetMode === 'roboflow'
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Real (Roboflow)
+            </button>
+            <button
+              onClick={() => setDatasetMode('synthetic')}
+              title="Lihat Arsip Dataset Sintetis Awal"
+              className={`px-2 py-1 rounded transition-all ${
+                datasetMode === 'synthetic'
+                  ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Sintetis (Backup)
+            </button>
+          </div>
+
           {/* Cam Selector */}
           <select 
             value={selectedCam}
             onChange={(e) => setSelectedCam(e.target.value)}
             className="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs font-mono text-slate-300 focus:outline-none focus:border-cyan-500 cursor-pointer"
           >
-            <option value="CAM-01">CAM-01: Aisle A (Rack-04)</option>
-            <option value="CAM-02">CAM-02: Aisle B (Pallet Bay)</option>
-            <option value="CAM-03">CAM-03: Inbound Dock 02</option>
+            <option value="CAM-01">CAM-01: Aisle A (Barcode Rack - 6 Box)</option>
+            <option value="CAM-02">CAM-02: Pallet 04 (Ultra Complex Dense - 24 Box)</option>
+            <option value="CAM-03">CAM-03: Parts Bay (Shadow Stacking - 16 Box)</option>
+            <option value="CAM-04">CAM-04: Inbound Dock (Parcels - 4 Box)</option>
           </select>
 
           {/* Quick HUD toggles */}
@@ -282,15 +322,15 @@ export default function WarehouseCameraFeed() {
         {/* Metric 1: Detected Objects */}
         <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 hover:border-cyan-500/30 transition-colors">
           <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-            <span className="font-medium">Detected Objects</span>
+            <span className="font-medium">Detected in Frame</span>
             <Box className="w-3.5 h-3.5 text-cyan-400" />
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-xl font-bold font-mono text-white tracking-tight">46</span>
+            <span className="text-xl font-bold font-mono text-white tracking-tight">{currentBoxes.length}</span>
             <span className="text-xs font-semibold text-cyan-400">Boxes</span>
           </div>
           <p className="text-[10px] text-slate-400 mt-0.5 truncate">
-            Frame {selectedCam}: <strong className="text-white">{currentBoxes.length} box</strong>
+            {datasetMode === 'roboflow' ? '8.355 Citra (167.918 Anotasi)' : '46 Citra Sintetis (222 Anotasi)'}
           </p>
         </div>
 
@@ -324,21 +364,29 @@ export default function WarehouseCameraFeed() {
         {/* Metric 4: Model mAP@50 */}
         <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 hover:border-amber-500/30 transition-colors">
           <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
-            <span className="font-medium">Model mAP@50</span>
+            <span className="font-medium">{datasetMode === 'roboflow' ? 'Domain Transfer mAP' : 'Model mAP@50'}</span>
             <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-xl font-bold font-mono text-amber-400 tracking-tight">99.5%</span>
-            <span className="text-[10px] font-mono text-slate-400">IoU=0.50</span>
+            <span className="text-xl font-bold font-mono text-amber-400 tracking-tight">
+              {datasetMode === 'roboflow' ? '23.0%' : '99.5%'}
+            </span>
+            <span className="text-[10px] font-mono text-slate-400">
+              {datasetMode === 'roboflow' ? 'Baseline Nyata' : 'Sintetis'}
+            </span>
           </div>
-          <p className="text-[10px] text-slate-400 mt-0.5 truncate">Target &gt;= 85% Terlampaui</p>
+          <p className="text-[10px] text-slate-400 mt-0.5 truncate">
+            {datasetMode === 'roboflow' ? 'Target Colab GPU: >= 85%' : 'Target >= 85% Terlampaui'}
+          </p>
         </div>
       </div>
 
       {/* Model Verification Footer Notice */}
       <div className="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800 text-[10px] font-mono text-slate-400 flex flex-wrap items-center justify-between gap-2">
-        <span>Bobot Model Terlatih: <code className="text-cyan-400">computer_vision/weights/best.pt</code> (YOLOv8n 5.96MB)</span>
-        <span className="text-emerald-400 font-semibold">Evaluasi Frame Uji Terverifikasi (Akurasi 100%)</span>
+        <span>Bobot Model: <code className="text-cyan-400">computer_vision/models/best.pt</code> (YOLOv8n 5.96MB)</span>
+        <span className="text-emerald-400 font-semibold">
+          {datasetMode === 'roboflow' ? 'Sumber: Roboflow Universe (CC BY 4.0 - 8.355 Citra)' : 'Arsip: 46 Citra Sintetis (Legacy)'}
+        </span>
       </div>
     </div>
   );

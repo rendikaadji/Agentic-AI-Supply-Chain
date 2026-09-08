@@ -20,16 +20,22 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Training YOLOv8n untuk StockMind AI Cardboard Box Detection")
     parser.add_argument("--data", type=str, default="computer_vision/data/data.yaml", help="Path ke data.yaml")
     parser.add_argument("--model", type=str, default="yolov8n.pt", help="Pretrained model base (default: yolov8n.pt)")
-    parser.add_argument("--epochs", type=int, default=50, help="Jumlah epoch (default: 50)")
+    parser.add_argument("--epochs", type=int, default=100, help="Jumlah epoch maksimum (default: 100, dihentikan otomatis oleh --patience)")
+    parser.add_argument("--patience", type=int, default=20, help="Early stopping: hentikan jika tidak ada peningkatan setelah N epoch (default: 20)")
     parser.add_argument("--imgsz", type=int, default=640, help="Resolusi citra input (default: 640)")
     parser.add_argument("--batch", type=int, default=8, help="Ukuran batch (default: 8)")
-    parser.add_argument("--optimizer", type=str, default="SGD", choices=["SGD", "Adam", "AdamW"], help="Optimizer (default: SGD)")
-    parser.add_argument("--lr0", type=float, default=0.01, help="Initial learning rate")
+    parser.add_argument("--workers", type=int, default=8, help="Jumlah dataloader worker per train/val (default: 8 -> turunkan misal 4 jika RAM sistem terbatas, mosaic+mixup pada dataset besar rakus RAM per worker)")
+    parser.add_argument("--optimizer", type=str, default="AdamW", choices=["SGD", "Adam", "AdamW"], help="Optimizer (default: AdamW, bandingkan dengan --optimizer SGD)")
+    parser.add_argument("--lr0", type=float, default=None, help="Initial learning rate (default: auto -> 0.002 untuk Adam/AdamW, 0.01 untuk SGD)")
+    parser.add_argument("--cos-lr", dest="cos_lr", action="store_true", default=True, help="Aktifkan cosine LR annealing (default: aktif)")
+    parser.add_argument("--no-cos-lr", dest="cos_lr", action="store_false", help="Nonaktifkan cosine LR annealing (pakai linear default)")
+    parser.add_argument("--hsv-v", type=float, default=0.6, help="Augmentasi variasi brightness (default: 0.6, dinaikkan dari 0.4 untuk simulasi lorong gudang temaram)")
     parser.add_argument("--save-period", type=int, default=5, help="Simpan checkpoint tiap N epoch")
     parser.add_argument("--device", type=str, default="", help="Device: '0', 'cpu', atau kosong untuk auto-detect")
     parser.add_argument("--project", type=str, default="computer_vision/results/train", help="Direktori output training runs")
     parser.add_argument("--name", type=str, default="cardboard_box_yolov8n", help="Nama sub-run training")
     parser.add_argument("--export-dir", type=str, default="computer_vision/models", help="Direktori export final model")
+    parser.add_argument("--resume", action="store_true", help="Lanjutkan training dari checkpoint last.pt terakhir (run --project/--name yang sama) alih-alih mulai dari base model")
     return parser.parse_args()
 
 def check_dependencies():
@@ -44,6 +50,9 @@ def check_dependencies():
 
 def run_training():
     args = parse_args()
+    if args.lr0 is None:
+        # lr0=0.01 di-tuning untuk SGD; Adam/AdamW butuh LR jauh lebih rendah agar stabil
+        args.lr0 = 0.01 if args.optimizer == "SGD" else 0.002
     project_root = Path(__file__).resolve().parent.parent.parent
 
     # Resolusi path absolut (fleksibel jika dijalankan dari root atau subfolder)
@@ -67,7 +76,8 @@ def run_training():
     print(f"Epochs           : {args.epochs}")
     print(f"Image Size       : {args.imgsz}")
     print(f"Batch Size       : {args.batch}")
-    print(f"Optimizer        : {args.optimizer} (lr0={args.lr0})")
+    print(f"Optimizer        : {args.optimizer} (lr0={args.lr0}, cos_lr={args.cos_lr})")
+    print(f"Early Stopping   : patience={args.patience} epoch")
     print(f"Checkpoint Period: Setiap {args.save_period} epoch")
     print(f"Export Target    : {export_dir}")
     print("-----------------------------------------------------------------")
@@ -75,6 +85,18 @@ def run_training():
     if not data_yaml_path.exists():
         print(f"[!] File konfigurasi dataset tidak ditemukan: {data_yaml_path}")
         sys.exit(1)
+
+    import yaml
+    try:
+        with open(data_yaml_path, "r", encoding="utf-8") as f:
+            y_info = yaml.safe_load(f)
+        if y_info:
+            actual_data_dir = str(data_yaml_path.parent.resolve()).replace("\\", "/")
+            y_info["path"] = actual_data_dir
+            with open(data_yaml_path, "w", encoding="utf-8") as f:
+                yaml.safe_dump(y_info, f, sort_keys=False)
+    except Exception as e:
+        print(f"[*] Info auto-resolving data.yaml: {e}")
 
     if not check_dependencies():
         sys.exit(1)
@@ -93,34 +115,52 @@ def run_training():
     print("Augmentasi Aktif :")
     print("  * Horizontal Flip (fliplr=0.5)")
     print("  * Vertical Flip   (flipud=0.5)")
-    print("  * HSV Augmentation(h=0.015, s=0.7, v=0.4)")
+    print(f"  * HSV Augmentation(h=0.015, s=0.7, v={args.hsv_v})")
     print("  * Rotation        (degrees=10.0)")
     print("  * Scale & Trans   (scale=0.5, translate=0.1)")
+    print("  * Mosaic (Dense)  (mosaic=1.0 - 4 citra komposit)")
+    print("  * Mixup (Occlusion)(mixup=0.15 - blending kardus bertumpuk)")
+    print("  * Perspective     (perspective=0.0005 - koreksi CCTV)")
+    print("  * Random Erasing  (erasing=0.2 - simulasi halangan lakban/strapping)")
     print("-----------------------------------------------------------------")
-    print("[*] Menginisialisasi base model...")
-
-    model = YOLO(args.model)
-
-    print("[*] Memulai proses training YOLOv8n...")
-    results = model.train(
+    resume_ckpt = project_dir / args.name / "weights" / "last.pt"
+    if args.resume and resume_ckpt.exists():
+        print(f"[*] Melanjutkan training dari checkpoint: {resume_ckpt}")
+        model = YOLO(str(resume_ckpt))
+        print("[*] Memulai proses training (resume)...")
+        results = model.train(resume=True, workers=args.workers)
+    else:
+        if args.resume:
+            print(f"[!] --resume diminta tapi checkpoint tidak ditemukan di {resume_ckpt}, mulai dari base model.")
+        print("[*] Menginisialisasi base model...")
+        model = YOLO(args.model)
+        print("[*] Memulai proses training YOLOv8n...")
+        results = model.train(
         data=str(data_yaml_path),
         epochs=args.epochs,
+        patience=args.patience,
         imgsz=args.imgsz,
         batch=args.batch,
+        workers=args.workers,
         optimizer=args.optimizer,
         lr0=args.lr0,
+        cos_lr=args.cos_lr,
         device=device,
         save=True,
         save_period=args.save_period,
-        # Augmentasi standar industri gudang
+        # Augmentasi canggih untuk skenario gudang rumit & oklusi padat
         fliplr=0.5,
         flipud=0.5,
         hsv_h=0.015,
         hsv_s=0.7,
-        hsv_v=0.4,
+        hsv_v=args.hsv_v,  # dinaikkan dari 0.4 -> simulasi lorong gudang temaram/pencahayaan tidak merata
         degrees=10.0,
         scale=0.5,
         translate=0.1,
+        mosaic=1.0,        # Menggabungkan 4 scene komposit untuk melatih deteksi multi-box padat
+        mixup=0.15,        # Blending 2 citra untuk menangani kardus saling menumpuk/tertutupi (oklusi)
+        perspective=0.0005,# Distorsi sudut kamera CCTV langit-langit gudang
+        erasing=0.2,       # Simulasi kardus tertutup sebagian (partial occlusion)
         # Lokasi penyimpanan run
         project=str(project_dir),
         name=args.name,

@@ -345,21 +345,20 @@ Memvalidasi kontrak antarmuka (*interface contract*) ke Backend Lead:
 - **Kriteria Lulus (PASS):** 5/5 unit tests berstatus `ok`. Rata-rata latensi *warm-start* $\approx$ `30–35 ms`.
 
 ### 3. Benchmark Akurasi & Evaluasi Model (Tahap 3)
-Menguji performa bobot model [`computer_vision/models/best.pt`](file:///c:/laragon/www/Agentic-AI-Supply-Chain/stockmind-ai/computer_vision/models/best.pt) pada *test split* citra independen.
+Menguji performa bobot model [`computer_vision/models/best.pt`](file:///c:/laragon/www/Agentic-AI-Supply-Chain/stockmind-ai/computer_vision/models/best.pt) pada *test split* citra independen (839 citra Roboflow):
 ```powershell
 .\.venv\Scripts\python computer_vision/scripts/evaluate_model.py --model computer_vision/models/best.pt --split test
 ```
-- **Kriteria Lulus (PASS):** Target akurasi `mAP@50` $\ge 85\%$ (tercapai `99.5%` pada baseline sintetis).
 - **Output:** Metrik CSV tersimpan di [`computer_vision/results/model_evaluation_epoch50.csv`](file:///c:/laragon/www/Agentic-AI-Supply-Chain/stockmind-ai/computer_vision/results/model_evaluation_epoch50.csv) serta kurva PR dan Confusion Matrix di [`computer_vision/results/eval_plots/`](file:///c:/laragon/www/Agentic-AI-Supply-Chain/stockmind-ai/computer_vision/results/eval_plots/).
 
 ### 4. Uji Inferensi Langsung & Simulasi Lambda (Tahap 4)
 - **Deteksi Citra Tunggal via CLI:**
   ```powershell
-  .\.venv\Scripts\python computer_vision/scripts/inference.py --image computer_vision/data/test_images/warehouse_box_test_0001.jpg
+  .\.venv\Scripts\python computer_vision/scripts/inference.py --image computer_vision/data/test/images/net-1004-_jpg.rf.a6e3c3a1799304dbb2c22d01fcbe8b62.jpg
   ```
 - **Simulasi Payload Event AWS Lambda (API Gateway / EventBridge):**
   ```powershell
-  .\.venv\Scripts\python -c "import base64, json; from computer_vision.inference.lambda_handler import lambda_handler; img_b64 = base64.b64encode(open('computer_vision/data/test_images/warehouse_box_test_0001.jpg', 'rb').read()).decode('utf-8'); resp = lambda_handler({'body': json.dumps({'image_base64': img_b64})}, None); print('HTTP Status:', resp['statusCode']); print('Response Body:', resp['body'])"
+  .\.venv\Scripts\python -c "import base64, json; from computer_vision.inference.lambda_handler import lambda_handler; img_b64 = base64.b64encode(open('computer_vision/data/test/images/net-1004-_jpg.rf.a6e3c3a1799304dbb2c22d01fcbe8b62.jpg', 'rb').read()).decode('utf-8'); resp = lambda_handler({'body': json.dumps({'image_base64': img_b64})}, None); print('HTTP Status:', resp['statusCode']); print('Response Body:', resp['body'])"
   ```
 - **Kriteria Lulus (PASS):** Status code `200` dengan JSON body terenkapsulasi yang memuat jumlah kardus terdeteksi (`count`) untuk diproses ke rekonsiliasi DynamoDB dan SAP MM.
 
@@ -369,7 +368,7 @@ Untuk menjalankan seluruh 4 tahapan pengujian sekaligus dalam satu perintah Powe
 .\.venv\Scripts\python computer_vision/scripts/validate_dataset.py; `
 .\.venv\Scripts\python -m unittest tests/unit/test_vision_inference.py -v; `
 .\.venv\Scripts\python computer_vision/scripts/evaluate_model.py --model computer_vision/models/best.pt --split test; `
-.\.venv\Scripts\python computer_vision/scripts/inference.py --image computer_vision/data/test_images/warehouse_box_test_0001.jpg
+.\.venv\Scripts\python computer_vision/scripts/inference.py --image computer_vision/data/test/images/net-1004-_jpg.rf.a6e3c3a1799304dbb2c22d01fcbe8b62.jpg
 ```
 
 ---

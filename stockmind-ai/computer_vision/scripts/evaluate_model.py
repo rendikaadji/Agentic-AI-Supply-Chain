@@ -116,6 +116,18 @@ def run_evaluation():
     if not data_path.exists() and (Path.cwd() / args.data).exists():
         data_path = (Path.cwd() / args.data).resolve()
 
+    import yaml
+    try:
+        with open(data_path, "r", encoding="utf-8") as f:
+            y_info = yaml.safe_load(f)
+        if y_info:
+            actual_data_dir = str(data_path.parent.resolve()).replace("\\", "/")
+            y_info["path"] = actual_data_dir
+            with open(data_path, "w", encoding="utf-8") as f:
+                yaml.safe_dump(y_info, f, sort_keys=False)
+    except Exception:
+        pass
+
     csv_p = Path(args.output_csv)
     csv_path = csv_p if csv_p.is_absolute() else (project_root / args.output_csv).resolve()
 
@@ -230,9 +242,15 @@ def run_evaluation():
     print(f"\n[+] Hasil evaluasi CSV tersimpan di: {csv_path}")
 
     # Generate Visualisasi Prediksi pada Gambar Uji
-    test_img_dir = project_root / "computer_vision" / "data" / f"{args.split}_images"
-    if not test_img_dir.exists():
-        test_img_dir = project_root / "data" / f"{args.split}_images"
+    # Format Roboflow: data/{split}/images (alias 'val'->'valid'); fallback ke pola flat lama
+    split_alias = "valid" if args.split == "val" else args.split
+    test_img_dir_candidates = [
+        data_path.parent / split_alias / "images",
+        data_path.parent / args.split / "images",
+        project_root / "computer_vision" / "data" / f"{args.split}_images",
+        project_root / "data" / f"{args.split}_images",
+    ]
+    test_img_dir = next((d for d in test_img_dir_candidates if d.exists()), test_img_dir_candidates[0])
     if test_img_dir.exists():
         pred_out_dir = plots_dir / "predictions"
         saved = generate_prediction_visualizations(model, test_img_dir, pred_out_dir, conf=args.conf)
