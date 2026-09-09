@@ -37,28 +37,44 @@ def load_data_yaml(yaml_path: Path):
 def find_split_directories(data_dir: Path, split: str):
     """
     Menemukan direktori citra dan label untuk split tertentu,
-    mendukung format 'data/{split}_images' dan standar 'data/images/{split}'.
+    mendukung:
+    1. Format Roboflow: data/{split}/images dan data/{split}/labels (atau valid/images jika split=='val')
+    2. Format flat: data/{split}_images dan data/{split}_labels
+    3. Format standar YOLO: data/images/{split} dan data/labels/{split}
     """
-    # 1. Cek format data/{split}_images
-    candidate_img_1 = data_dir / f"{split}_images"
-    candidate_lbl_1 = data_dir / f"{split}_labels"
+    # Nama alias split (misal: 'val' sering dinamakan 'valid' oleh Roboflow)
+    split_aliases = [split]
+    if split == "val":
+        split_aliases.append("valid")
+    elif split == "valid":
+        split_aliases.append("val")
 
-    # 2. Cek format data/images/{split}
-    candidate_img_2 = data_dir / "images" / split
-    candidate_lbl_2 = data_dir / "labels" / split
+    # 1. Cek format Roboflow: data/{split}/images dan data/{split}/labels
+    for s in split_aliases:
+        candidate_img = data_dir / s / "images"
+        candidate_lbl = data_dir / s / "labels"
+        if candidate_img.exists() and any(candidate_img.iterdir()):
+            lbl_dir = candidate_lbl if candidate_lbl.exists() else candidate_img
+            return candidate_img, lbl_dir
 
-    if candidate_img_1.exists() and any(candidate_img_1.iterdir()):
-        img_dir = candidate_img_1
-        lbl_dir = candidate_lbl_1 if candidate_lbl_1.exists() else candidate_img_1
-    elif candidate_img_2.exists() and any(candidate_img_2.iterdir()):
-        img_dir = candidate_img_2
-        lbl_dir = candidate_lbl_2 if candidate_lbl_2.exists() else candidate_img_2
-    else:
-        # Fallback ke candidate 1 walaupun kosong
-        img_dir = candidate_img_1
-        lbl_dir = candidate_lbl_1
+    # 2. Cek format data/{split}_images dan data/{split}_labels
+    for s in split_aliases:
+        candidate_img = data_dir / f"{s}_images"
+        candidate_lbl = data_dir / f"{s}_labels"
+        if candidate_img.exists() and any(candidate_img.iterdir()):
+            lbl_dir = candidate_lbl if candidate_lbl.exists() else candidate_img
+            return candidate_img, lbl_dir
 
-    return img_dir, lbl_dir
+    # 3. Cek format data/images/{split} dan data/labels/{split}
+    for s in split_aliases:
+        candidate_img = data_dir / "images" / s
+        candidate_lbl = data_dir / "labels" / s
+        if candidate_img.exists() and any(candidate_img.iterdir()):
+            lbl_dir = candidate_lbl if candidate_lbl.exists() else candidate_img
+            return candidate_img, lbl_dir
+
+    # Fallback default
+    return data_dir / f"{split}_images", data_dir / f"{split}_labels"
 
 def find_label_file(img_path: Path, lbl_dir: Path):
     """
@@ -153,14 +169,15 @@ def validate_split(split_name: str, img_dir: Path, lbl_dir: Path, expected_class
 
         for line_idx, line in enumerate(lines, start=1):
             tokens = line.split()
-            if len(tokens) != 5:
+            # YOLO format: 5 token untuk BBox (class xc yc w h) atau >=7 token untuk Polygon (class x1 y1 x2 y2 ...)
+            if len(tokens) < 5 or (len(tokens) > 5 and len(tokens) % 2 == 0):
                 stats["invalid_format_boxes"].append(
-                    (img_path.name, f"Baris {line_idx}: Diharapkan 5 token (class xc yc w h), ditemukan {len(tokens)}")
+                    (img_path.name, f"Baris {line_idx}: Format tidak valid, ditemukan {len(tokens)} token")
                 )
                 has_box_error = True
                 continue
 
-            cls_str, xc_str, yc_str, w_str, h_str = tokens
+            cls_str = tokens[0]
             
             # Cek class_id
             try:
@@ -171,31 +188,53 @@ def validate_split(split_name: str, img_dir: Path, lbl_dir: Path, expected_class
                 )
                 continue
 
-            # Cek float coordinates
-            try:
-                xc = float(xc_str)
-                yc = float(yc_str)
-                bw = float(w_str)
-                bh = float(h_str)
-            except ValueError:
-                stats["invalid_format_boxes"].append(
-                    (img_path.name, f"Baris {line_idx}: Koordinat bbox bukan float valid")
-                )
-                continue
+            if len(tokens) == 5:
+                # Format Bounding Box: class xc yc w h
+                _, xc_str, yc_str, w_str, h_str = tokens
+                try:
+                    xc = float(xc_str)
+                    yc = float(yc_str)
+                    bw = float(w_str)
+                    bh = float(h_str)
+                except ValueError:
+                    stats["invalid_format_boxes"].append(
+                        (img_path.name, f"Baris {line_idx}: Koordinat bbox bukan float valid")
+                    )
+                    continue
 
-            # Cek normalisasi [0.0, 1.0]
-            if not (0.0 <= xc <= 1.0 and 0.0 <= yc <= 1.0 and 0.0 <= bw <= 1.0 and 0.0 <= bh <= 1.0):
-                stats["out_of_bounds_boxes"].append(
-                    (img_path.name, f"Baris {line_idx}: Nilai normalisasi di luar [0, 1]: xc={xc}, yc={yc}, w={bw}, h={bh}")
-                )
-                continue
+                if not (0.0 <= xc <= 1.0 and 0.0 <= yc <= 1.0 and 0.0 <= bw <= 1.0 and 0.0 <= bh <= 1.0):
+                    stats["out_of_bounds_boxes"].append(
+                        (img_path.name, f"Baris {line_idx}: Nilai normalisasi di luar [0, 1]: xc={xc}, yc={yc}, w={bw}, h={bh}")
+                    )
+                    continue
 
-            # Validasi lebar dan tinggi harus > 0
-            if bw <= 0 or bh <= 0:
-                stats["out_of_bounds_boxes"].append(
-                    (img_path.name, f"Baris {line_idx}: Lebar atau tinggi bbox <= 0 (w={bw}, h={bh})")
-                )
-                continue
+                if bw <= 0 or bh <= 0:
+                    stats["out_of_bounds_boxes"].append(
+                        (img_path.name, f"Baris {line_idx}: Lebar atau tinggi bbox <= 0 (w={bw}, h={bh})")
+                    )
+                    continue
+            else:
+                # Format Polygon: class x1 y1 x2 y2 ...
+                try:
+                    coords = [float(t) for t in tokens[1:]]
+                except ValueError:
+                    stats["invalid_format_boxes"].append(
+                        (img_path.name, f"Baris {line_idx}: Koordinat polygon bukan float valid")
+                    )
+                    continue
+
+                xs = coords[0::2]
+                ys = coords[1::2]
+                
+                # Toleransi floating point sedikit di luar [0, 1] (misal: 1.0001)
+                if any(x < -0.01 or x > 1.01 for x in xs) or any(y < -0.01 or y > 1.01 for y in ys):
+                    stats["out_of_bounds_boxes"].append(
+                        (img_path.name, f"Baris {line_idx}: Titik polygon di luar rentang normalisasi [0, 1]")
+                    )
+                    continue
+
+                bw = max(xs) - min(xs)
+                bh = max(ys) - min(ys)
 
             # Cek class name
             cls_name = expected_classes.get(cls_id, f"class_{cls_id}") if expected_classes else f"class_{cls_id}"
@@ -302,12 +341,24 @@ def generate_report(data_dir: Path, yaml_info: dict, split_stats: dict, output_p
 
     return report_content, is_overall_valid
 
+def resolve_path(p_str: str, project_root: Path) -> Path:
+    p = Path(p_str)
+    if p.is_absolute():
+        return p
+    # Cek relatif terhadap CWD saat ini
+    if (Path.cwd() / p).exists():
+        return (Path.cwd() / p).resolve()
+    # Cek relatif terhadap project_root
+    if (project_root / p).exists():
+        return (project_root / p).resolve()
+    return (project_root / p).resolve()
+
 def main():
     args = parse_args()
     project_root = Path(__file__).resolve().parent.parent.parent
-    data_dir = project_root / args.data_dir
-    yaml_path = project_root / args.yaml_file
-    report_path = project_root / args.report_file
+    data_dir = resolve_path(args.data_dir, project_root)
+    yaml_path = resolve_path(args.yaml_file, project_root)
+    report_path = resolve_path(args.report_file, project_root)
 
     print("[*] Memulai validasi dataset YOLOv8...")
     print(f"[*] Root direktori data : {data_dir}")

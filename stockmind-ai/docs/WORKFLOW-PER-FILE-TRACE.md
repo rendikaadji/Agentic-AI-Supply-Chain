@@ -65,7 +65,7 @@ StockMind AI dirancang dengan pola arsitektur **Multi-Agent System (MAS)** siklu
 1. **`computer_vision/`**: Subsystem inti Fase 1 yang mengolah citra rak gudang, melakukan inferensi deteksi objek kotak kardus (`cardboard_box`), menghasilkan kontrak data JSON, dan menjadi adapter AWS Lambda.
 2. **`frontend/`**: Antarmuka monitoring real-time berbasis web untuk menavigasi status 6 agen otonom, feeds kamera inspeksi, log eksekusi terminal, dan kontrol orkestrasi rantai pasok.
 3. **`tests/`**: Unit test suite otomatis yang memvalidasi kontrak skema JSON, batas latensi <500ms, dan normalisasi koordinat bounding box sebelum deployment.
-4. **`scripts/` & `notebooks/`**: Script pembantu dan wrapper eksekusi root workspace untuk mempermudah eksekusi training/evaluasi baik di lokal maupun Google Colab.
+4. **`computer_vision/scripts/` & `computer_vision/notebooks/`**: Script dan notebook training/evaluasi kanonikal (lokal maupun Google Colab). Sebelumnya ada wrapper duplikat di root workspace (`scripts/`, `notebooks/`); dihapus per review feedback (PR #7) untuk menghindari duplikasi — semua eksekusi kini langsung ke folder ini.
 5. **`agents/`, `backend/`, `integrations/`, `infra/`**: Modul arsitektural terstruktur yang disiapkan (scaffolded) untuk tahap integrasi layanan cloud AWS dan ERP SAP pada fase berikutnya.
 
 ---
@@ -359,29 +359,9 @@ Layer ini mengatur pipeline kompilasi, dependensi pustaka, dan konfigurasi envir
 
 ---
 
-### Layer 4: Execution Scripts & Compatibility Wrappers
+### Layer 4: Execution Scripts (Canonical)
 
-Layer ini menyediakan entry point ramah pengguna di level root repository untuk memfasilitasi integrasi otomatis dan eksekusi di lingkungan berbeda (seperti Google Colab atau Jenkins/GitHub Actions).
-
----
-
-#### `scripts/train_yolov8.py`
-**Peran:** Wrapper tingkat root project untuk menjalankan script training Computer Vision tanpa harus berpindah subdirektori.  
-**Import lokal:** [computer_vision/scripts/train_yolov8.py](../computer_vision/scripts/train_yolov8.py)
-
-| Entry Point | Called By | Calls | Input | Output / Side Effect |
-|---|---|---|---|---|
-| Module Execution (Top-Level) | CLI: `python scripts/train_yolov8.py [args]` | `computer_vision.scripts.train_yolov8::run_training()` | Menambahkan root dan `computer_vision` ke `sys.path`, meneruskan `sys.argv` | Menjalankan modul training YOLOv8n dan menyimpan bobot ke folder models. |
-
----
-
-#### `notebooks/01_yolo8_training.py`
-**Peran:** Wrapper kompatibilitas training di root folder `notebooks/` untuk lingkungan komputasi notebook atau developer yang bekerja dari root project.  
-**Import lokal:** [computer_vision/scripts/train_yolov8.py](../computer_vision/scripts/train_yolov8.py)
-
-| Entry Point | Called By | Calls | Input | Output / Side Effect |
-|---|---|---|---|---|
-| Module Execution (Top-Level) | CLI: `python notebooks/01_yolo8_training.py` | `computer_vision.scripts.train_yolov8::run_training()` | Argumen baris perintah | Menjalankan training dan sinkronisasi model. |
+> **Update (PR #7 review):** Wrapper duplikat `scripts/train_yolov8.py`, `scripts/download_roboflow_dataset.py`, dan `notebooks/01_yolo8_training.py` yang sebelumnya ada di root workspace telah **dihapus**. Semua eksekusi training/evaluasi/download dataset kini langsung memakai script kanonikal di `computer_vision/scripts/` dan `computer_vision/notebooks/` (lihat Layer 1 di atas), tanpa layer wrapper tambahan.
 
 ---
 
@@ -568,13 +548,9 @@ sequenceDiagram
 Tidak ditemukan file kode tersembunyi yang berada di luar inventarisasi. Seluruh 39 file Python, JSX, konfigurasi Node, dan YAML telah dianalisis secara lengkap.
 
 ### Ghost / Dead Files & Reference Discrepancies
-1. **Duplikasi Skrip Notebook:**
-   - Ditemukan file identik fungsional: [notebooks/01_yolo8_training.py](../notebooks/01_yolo8_training.py) dan [computer_vision/notebooks/01_yolo8_training.py](../computer_vision/notebooks/01_yolo8_training.py).
-   - *Penyebab:* Penyesuaian `sys.path` untuk developer yang menjalankan skrip dari subfolder versus yang menjalankan dari root workspace.
-   - *Rekomendasi:* Pertahankan kedua file demi fleksibilitas lingkungan notebook (Google Colab), namun catat dalam panduan developer bahwa skrip kanonikal berada di `computer_vision/scripts/train_yolov8.py`.
-2. **Wrapper Skrip Training di Root:**
-   - File [scripts/train_yolov8.py](../scripts/train_yolov8.py) hanya bertindak sebagai wrapper 10 baris ke `computer_vision/scripts/train_yolov8.py`.
-   - *Rekomendasi:* Status valid sebagai kenyamanan eksekusi CLI.
+1. **Duplikasi Skrip & Notebook di Root (Resolved, PR #7):**
+   - Sebelumnya ditemukan file duplikat/wrapper di root workspace: `notebooks/01_yolo8_training.ipynb` (identik byte-for-byte dengan `computer_vision/notebooks/01_yolo8_training.ipynb`), `notebooks/01_yolo8_training.py`, `scripts/train_yolov8.py`, dan `scripts/download_roboflow_dataset.py`.
+   - *Tindakan:* Folder `notebooks/` dan `scripts/` di root dihapus per review feedback Subki (PR #7). Skrip kanonikal satu-satunya sekarang ada di `computer_vision/scripts/` dan `computer_vision/notebooks/`.
 
 ### High Complexity Files
 1. **`frontend/src/components/ExecutionConsole.jsx` (432 baris):**

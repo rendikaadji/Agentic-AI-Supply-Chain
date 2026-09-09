@@ -1,5 +1,6 @@
 # Python Virtual Environment
 .venv/
+.venv_train/
 venv/
 env/
 
@@ -18,10 +19,29 @@ __pycache__/
 data/*.cache
 computer_vision/data/*.cache
 yolov8n.pt
+yolov8s.pt
+weights/
 
-# Intermediate training runs
+# Intermediate training runs & raw training logs (regenerable, not diffable)
 results/train/
 computer_vision/results/train/
+computer_vision/logs/
+**/_synthetic_backup/
+
+# Raw dataset splits (re-downloadable via download_roboflow_dataset.py)
+computer_vision/data/train/
+computer_vision/data/valid/
+computer_vision/data/test/
+data/train/
+data/valid/
+data/test/
+
+# Dedupe-check output (regenerable via dedupe_check.py, requires raw dataset above)
+computer_vision/data/test_clean/
+computer_vision/data/data_test_clean.yaml
+
+# Per-image prediction visualizations from evaluate_model.py (regenerable, hundreds of MB)
+computer_vision/results/eval_plots*/predictions/
 
 # IDE / Editor configuration
 .vscode/

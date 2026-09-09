@@ -3,14 +3,14 @@
            Subsystem: Vision Inventory Agent (Cardboard Box Detection)          
 ================================================================================
 Status Validasi Keseluruhan : [PASS] VALID
-Lokasi Dataset              : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data
+Lokasi Dataset              : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data
 Konfigurasi data.yaml       : Ditemukan
 Daftar Kelas (Classes)      : {0: 'cardboard_box'}
 --------------------------------------------------------------------------------
 RINGKASAN METRIK GLOBAL:
-  * Total Citra               : 46
-  * Total Bounding Box Kardus : 222
-  * Rata-rata BBox per Citra  : 4.83
+  * Total Citra               : 8355
+  * Total Bounding Box Kardus : 167918
+  * Rata-rata BBox per Citra  : 20.10
   * Citra Korup               : 0
   * Citra Tanpa File Label    : 0
   * Anotasi Invalid / Out-of-Bounds: 0
@@ -18,52 +18,52 @@ RINGKASAN METRIK GLOBAL:
 DETAIL PER SPLIT:
 
 [Split: TRAIN]
-  - Folder Citra         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\train_images
-  - Folder Label         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\train_labels
-  - Jumlah Citra         : 30 (65.2% dari total)
-  - Total Bounding Box   : 137 (avg 4.57/citra)
+  - Folder Citra         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\train\images
+  - Folder Label         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\train\labels
+  - Jumlah Citra         : 5844 (69.9% dari total)
+  - Total Bounding Box   : 116813 (avg 19.99/citra)
   - Citra Korup          : 0
   - Missing Label Files  : 0
-  - Empty Labels (Neg)   : 0
+  - Empty Labels (Neg)   : 19
   - Invalid Box Format   : 0
   - Out of Bounds Coord  : 0
   - Distribusi Kelas     :
-      * cardboard_box: 137 box
+      * cardboard_box: 116813 box
   - Statistik Ukuran Box (Norm 0-1):
-      * Width  (min/avg/max): 0.1281 / 0.2725 / 0.7422
-      * Height (min/avg/max): 0.1094 / 0.1588 / 0.2031
+      * Width  (min/avg/max): 0.0060 / 0.2136 / 1.0000
+      * Height (min/avg/max): 0.0056 / 0.1891 / 1.0000
 
 [Split: VAL]
-  - Folder Citra         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\val_images
-  - Folder Label         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\val_labels
-  - Jumlah Citra         : 8 (17.4% dari total)
-  - Total Bounding Box   : 45 (avg 5.62/citra)
+  - Folder Citra         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\valid\images
+  - Folder Label         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\valid\labels
+  - Jumlah Citra         : 1672 (20.0% dari total)
+  - Total Bounding Box   : 33772 (avg 20.20/citra)
   - Citra Korup          : 0
   - Missing Label Files  : 0
-  - Empty Labels (Neg)   : 0
+  - Empty Labels (Neg)   : 6
   - Invalid Box Format   : 0
   - Out of Bounds Coord  : 0
   - Distribusi Kelas     :
-      * cardboard_box: 45 box
+      * cardboard_box: 33772 box
   - Statistik Ukuran Box (Norm 0-1):
-      * Width  (min/avg/max): 0.1281 / 0.2251 / 0.3563
-      * Height (min/avg/max): 0.1094 / 0.1512 / 0.2031
+      * Width  (min/avg/max): 0.0038 / 0.2128 / 1.0000
+      * Height (min/avg/max): 0.0060 / 0.1871 / 1.0000
 
 [Split: TEST]
-  - Folder Citra         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\test_images
-  - Folder Label         : C:\Users\subki\Desktop\Agentic-AI-Supply-Chain-main\stockmind-ai\computer_vision\data\test_labels
-  - Jumlah Citra         : 8 (17.4% dari total)
-  - Total Bounding Box   : 40 (avg 5.00/citra)
+  - Folder Citra         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\test\images
+  - Folder Label         : C:\laragon\www\Agentic-AI-Supply-Chain\stockmind-ai\computer_vision\data\test\labels
+  - Jumlah Citra         : 839 (10.0% dari total)
+  - Total Bounding Box   : 17333 (avg 20.66/citra)
   - Citra Korup          : 0
   - Missing Label Files  : 0
-  - Empty Labels (Neg)   : 0
+  - Empty Labels (Neg)   : 1
   - Invalid Box Format   : 0
   - Out of Bounds Coord  : 0
   - Distribusi Kelas     :
-      * cardboard_box: 40 box
+      * cardboard_box: 17333 box
   - Statistik Ukuran Box (Norm 0-1):
-      * Width  (min/avg/max): 0.1688 / 0.2456 / 0.5281
-      * Height (min/avg/max): 0.1125 / 0.1545 / 0.2000
+      * Width  (min/avg/max): 0.0061 / 0.2102 / 1.0000
+      * Height (min/avg/max): 0.0087 / 0.1869 / 1.0000
 
 ================================================================================
 KESIMPULAN & REKOMENDASI UNTUK VISION/ML LEAD:

@@ -1,0 +1,406 @@
+{
+  "CAM-01": {
+    "image": "/cam-01_real_roboflow.jpg",
+    "zone": "ZONE-A (Aisle A, High-Bay Stacking)",
+    "sku": "BOX-CB-001",
+    "batch": "#WH-ROBOFLOW-01",
+    "boxes": [
+      {
+        "id": "BOX-001",
+        "label": "cardboard_box",
+        "conf": 0.99,
+        "top": 93.41,
+        "left": 31.18,
+        "width": 19.17,
+        "height": 6.53,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-002",
+        "label": "cardboard_box",
+        "conf": 0.91,
+        "top": 52.72,
+        "left": 63.69,
+        "width": 23.04,
+        "height": 29.21,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-003",
+        "label": "cardboard_box",
+        "conf": 0.88,
+        "top": 73.46,
+        "left": 13.77,
+        "width": 17.26,
+        "height": 19.35,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-004",
+        "label": "cardboard_box",
+        "conf": 0.88,
+        "top": 7.46,
+        "left": 71.53,
+        "width": 16.42,
+        "height": 16.51,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-005",
+        "label": "cardboard_box",
+        "conf": 0.85,
+        "top": 11.15,
+        "left": 12.41,
+        "width": 21.77,
+        "height": 15.0,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-006",
+        "label": "cardboard_box",
+        "conf": 0.85,
+        "top": 36.24,
+        "left": 8.78,
+        "width": 17.6,
+        "height": 19.5,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-007",
+        "label": "cardboard_box",
+        "conf": 0.84,
+        "top": 0.03,
+        "left": 13.87,
+        "width": 14.12,
+        "height": 12.66,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-008",
+        "label": "cardboard_box",
+        "conf": 0.82,
+        "top": 10.11,
+        "left": 34.13,
+        "width": 14.6,
+        "height": 15.36,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-009",
+        "label": "cardboard_box",
+        "conf": 0.81,
+        "top": 38.59,
+        "left": 0.02,
+        "width": 9.16,
+        "height": 17.41,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-010",
+        "label": "cardboard_box",
+        "conf": 0.78,
+        "top": 38.4,
+        "left": 71.39,
+        "width": 16.74,
+        "height": 15.05,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-011",
+        "label": "cardboard_box",
+        "conf": 0.75,
+        "top": 0.0,
+        "left": 27.99,
+        "width": 21.07,
+        "height": 25.46,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-012",
+        "label": "cardboard_box",
+        "conf": 0.72,
+        "top": 22.96,
+        "left": 65.12,
+        "width": 24.18,
+        "height": 30.64,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-013",
+        "label": "cardboard_box",
+        "conf": 0.7,
+        "top": 54.92,
+        "left": 3.02,
+        "width": 25.79,
+        "height": 19.46,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-014",
+        "label": "cardboard_box",
+        "conf": 0.69,
+        "top": 66.19,
+        "left": 49.79,
+        "width": 21.57,
+        "height": 15.32,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-015",
+        "label": "cardboard_box",
+        "conf": 0.66,
+        "top": 0.01,
+        "left": 28.07,
+        "width": 20.9,
+        "height": 10.74,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-016",
+        "label": "cardboard_box",
+        "conf": 0.65,
+        "top": 72.46,
+        "left": 0.04,
+        "width": 14.23,
+        "height": 18.82,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-017",
+        "label": "cardboard_box",
+        "conf": 0.57,
+        "top": 5.53,
+        "left": 0.02,
+        "width": 14.69,
+        "height": 12.98,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-018",
+        "label": "cardboard_box",
+        "conf": 0.51,
+        "top": 67.24,
+        "left": 71.25,
+        "width": 15.42,
+        "height": 15.01,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-019",
+        "label": "cardboard_box",
+        "conf": 0.51,
+        "top": 38.27,
+        "left": 49.66,
+        "width": 20.86,
+        "height": 15.02,
+        "color": "cyan"
+      }
+    ]
+  },
+  "CAM-02": {
+    "image": "/cam-02_real_roboflow.jpg",
+    "zone": "ZONE-B (Aisle B, Pallet Bay)",
+    "sku": "BOX-CB-001",
+    "batch": "#WH-ROBOFLOW-02",
+    "boxes": [
+      {
+        "id": "BOX-001",
+        "label": "cardboard_box",
+        "conf": 0.93,
+        "top": 92.96,
+        "left": 45.89,
+        "width": 12.65,
+        "height": 4.94,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-002",
+        "label": "cardboard_box",
+        "conf": 0.93,
+        "top": 92.53,
+        "left": 84.79,
+        "width": 13.82,
+        "height": 5.38,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-003",
+        "label": "cardboard_box",
+        "conf": 0.9,
+        "top": 93.05,
+        "left": 25.85,
+        "width": 13.2,
+        "height": 4.88,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-004",
+        "label": "cardboard_box",
+        "conf": 0.87,
+        "top": 92.59,
+        "left": 65.11,
+        "width": 12.84,
+        "height": 5.32,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-005",
+        "label": "cardboard_box",
+        "conf": 0.77,
+        "top": 68.72,
+        "left": 28.48,
+        "width": 10.97,
+        "height": 4.1,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-006",
+        "label": "cardboard_box",
+        "conf": 0.72,
+        "top": 68.59,
+        "left": 46.26,
+        "width": 12.07,
+        "height": 4.15,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-007",
+        "label": "cardboard_box",
+        "conf": 0.55,
+        "top": 93.97,
+        "left": 7.66,
+        "width": 11.69,
+        "height": 4.5,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-008",
+        "label": "cardboard_box",
+        "conf": 0.45,
+        "top": 67.77,
+        "left": 80.93,
+        "width": 16.45,
+        "height": 14.81,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-009",
+        "label": "cardboard_box",
+        "conf": 0.41,
+        "top": 41.95,
+        "left": 46.32,
+        "width": 7.77,
+        "height": 6.48,
+        "color": "cyan"
+      }
+    ]
+  },
+  "CAM-03": {
+    "image": "/cam-03_real_roboflow.jpg",
+    "zone": "ZONE-C (Inbound Dock 02, Staging)",
+    "sku": "BOX-CB-001",
+    "batch": "#WH-ROBOFLOW-03",
+    "boxes": [
+      {
+        "id": "BOX-001",
+        "label": "cardboard_box",
+        "conf": 0.97,
+        "top": 65.32,
+        "left": 54.26,
+        "width": 12.69,
+        "height": 14.78,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-002",
+        "label": "cardboard_box",
+        "conf": 0.96,
+        "top": 51.62,
+        "left": 11.01,
+        "width": 14.47,
+        "height": 16.39,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-003",
+        "label": "cardboard_box",
+        "conf": 0.91,
+        "top": 66.24,
+        "left": 41.05,
+        "width": 13.14,
+        "height": 13.76,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-004",
+        "label": "cardboard_box",
+        "conf": 0.91,
+        "top": 50.45,
+        "left": 66.23,
+        "width": 12.9,
+        "height": 15.22,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-005",
+        "label": "cardboard_box",
+        "conf": 0.87,
+        "top": 35.71,
+        "left": 53.66,
+        "width": 13.24,
+        "height": 15.8,
+        "color": "emerald"
+      },
+      {
+        "id": "BOX-006",
+        "label": "cardboard_box",
+        "conf": 0.69,
+        "top": 20.11,
+        "left": 10.01,
+        "width": 11.86,
+        "height": 15.48,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-007",
+        "label": "cardboard_box",
+        "conf": 0.6,
+        "top": 20.31,
+        "left": 37.85,
+        "width": 28.06,
+        "height": 16.66,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-008",
+        "label": "cardboard_box",
+        "conf": 0.52,
+        "top": 51.18,
+        "left": 24.75,
+        "width": 14.84,
+        "height": 16.54,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-009",
+        "label": "cardboard_box",
+        "conf": 0.47,
+        "top": 36.35,
+        "left": 39.8,
+        "width": 14.09,
+        "height": 15.74,
+        "color": "cyan"
+      },
+      {
+        "id": "BOX-010",
+        "label": "cardboard_box",
+        "conf": 0.46,
+        "top": 20.01,
+        "left": 22.19,
+        "width": 14.07,
+        "height": 15.5,
+        "color": "cyan"
+      }
+    ]
+  }
+}

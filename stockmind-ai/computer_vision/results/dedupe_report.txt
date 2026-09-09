@@ -1,0 +1,83 @@
+================================================================================
+        STOCKMIND AI - LAPORAN DEDUPLIKASI TEST vs TRAIN (PERCEPTUAL HASH)     
+================================================================================
+Total citra test                     : 839
+Leaked (near-duplicate dengan train)  : 74 (8.8%)
+Bersih (tidak ada near-duplicate)     : 765 (91.2%)
+--------------------------------------------------------------------------------
+DAFTAR TEST IMAGE YANG LEAKED (nama_test -> mirip nama_train):
+  net-1037-_jpg.rf.52ea012de25781b60552757221008164.jpg  ->  net-3131-_jpg.rf.0c9b81a9b14bf4ca589b371b5a36df87.jpg
+  net-11031-_jpg.rf.a03f990863975423134fa1e6dc79b12c.jpg  ->  net-5037-_jpg.rf.e2488bca42279766658efe95d0a1fdd6.jpg
+  net-11451-_jpg.rf.fcd2e329e1db2d8eefdda028d5f99df5.jpg  ->  net-6130-_jpg.rf.a89ce0a5758d9f4e0c2703d9d5f0c6a5.jpg
+  net-11490-_jpg.rf.fbbd3dba402a60c04fa24714eef8ccba.jpg  ->  net-15581-_jpg.rf.390ec96376f94e47510c6ab0c95d515f.jpg
+  net-11516-_jpg.rf.36da6cf0f9fc4917b47c525c82711b9c.jpg  ->  net-3839-_jpg.rf.9e5ddb618100720e4fa5af841d42575f.jpg
+  net-11551-_jpg.rf.c75c92d24683f4d88b4ac06eb7d77fa5.jpg  ->  net-6005-_jpg.rf.d4750441796df23787e8a6d6eccf7762.jpg
+  net-11631-_jpg.rf.f074cc82fafd052a27084bbc07fb4c28.jpg  ->  net-7927-_jpg.rf.2fcab47887e3cf66bf400ad48c0718a8.jpg
+  net-1193-_jpg.rf.13e02fa40ad992a741ce57e00cca239c.jpg  ->  net-5731-_jpg.rf.8b974bd8964422121961c5ce97af903c.jpg
+  net-12263-_jpg.rf.001e1866f88723f45146dc2979615451.jpg  ->  net-11670-_jpg.rf.938026f2527bcd1e3d9dc08e7c87da07.jpg
+  net-12716-_jpg.rf.af87b97a5e2bef8ad83f7c1989679362.jpg  ->  net-5788-_jpg.rf.75b8cb578341eb27d04eb80436f95f35.jpg
+  net-12789-_jpg.rf.e8c9f04e76712cb11cf4ba294dd88ce0.jpg  ->  net-5635-_jpg.rf.c0116a4e4a14e920d85a67e172385a75.jpg
+  net-12868-_jpg.rf.14dc0b756e9f7e98c463d1b8f8b37824.jpg  ->  net-13083-_jpg.rf.28553eba7e63e27fb8edd44e9467bb5d.jpg
+  net-13062-_jpg.rf.d2599856bb115f71a044dcdfd75dc165.jpg  ->  net-14300-_jpg.rf.b5cca3477ffd521e11ebf8cdd66cf394.jpg
+  net-13132-_jpg.rf.df0df1f600449cc32e5f147a74f7461f.jpg  ->  net-11148-_jpg.rf.9478e644778a3dc9e31400cfa23d24f4.jpg
+  net-13359-_jpg.rf.6075702bc07b4a85722a7c91b7af0c0a.jpg  ->  net-563-_jpg.rf.b7ba1f7c38d16fbdadb2151c849c51c1.jpg
+  net-1345-_jpg.rf.c081787b0a7b8921c0adba44ce7c509c.jpg  ->  net-3299-_jpg.rf.e27de8fc113abde11f0df368294449a0.jpg
+  net-13497-_jpg.rf.e2b940527d086528a9525995141887fb.jpg  ->  net-9922-_jpg.rf.bcca69d0f286e0b5e3ca62e272e7922d.jpg
+  net-13706-_jpg.rf.bea3ff8e1a5022d89358501f9b5a02dd.jpg  ->  net-11840-_jpg.rf.f671cbe43be5c5ccbb3af71408cbc191.jpg
+  net-13917-_jpg.rf.d87ced6f4255f12cd0bdbd071f5199c6.jpg  ->  net-2249-_jpg.rf.9917ef1a43b2596e650000fb27c45964.jpg
+  net-14008-_jpg.rf.1c74e0bdd886434fa8ab9f19cc62d50f.jpg  ->  net-4463-_jpg.rf.8f86098c306bdc300bbff831d2e76756.jpg
+  net-14215-_jpg.rf.ca216839632e33f3354cd5a9e68c51f7.jpg  ->  net-3183-_jpg.rf.8352c392403a644db0ea0815bbf24829.jpg
+  net-144-_jpg.rf.5dd9446115b05d42ddc61f7706055816.jpg  ->  net-12225-_jpg.rf.82edf585d62d7114f8bd6412ae3c8d0d.jpg
+  net-14530-_jpg.rf.b26621f824c4e6cb1f68ba5ddce0f77b.jpg  ->  net-15547-_jpg.rf.afbedf47074ada349d60e7caec27b9a4.jpg
+  net-14688-_jpg.rf.5d508b1fad03f75c1bd072e29c749c5d.jpg  ->  net-12384-_jpg.rf.33beda8d526c45e8f73cf9b6469b7f56.jpg
+  net-14995-_jpg.rf.168516428790faf9929ba305a495b26c.jpg  ->  net-4094-_jpg.rf.ac240d02766c922a9cbc8e5b3bcb4d83.jpg
+  net-15052-_jpg.rf.473bd5e8a96eacf8dba1d6d178ae9984.jpg  ->  net-1491-_jpg.rf.913a618dd1be88a12b7258e2750b43d4.jpg
+  net-15113-_jpg.rf.fcf237f0fc4c77e6d6cd9d1e6ba62f54.jpg  ->  net-13393-_jpg.rf.995d589c9947e78e0bad801b3e6e7a14.jpg
+  net-15944-_jpg.rf.486100fba6b81a3bdb08fc870cdf66ba.jpg  ->  net-6134-_jpg.rf.a02fd1fd98b5399b719e80300832ce2c.jpg
+  net-16047-_jpg.rf.57819fb0c58a3778aafc89a9fced84d7.jpg  ->  net-6772-_jpg.rf.cf0d93546d06002f6139b688d7beda69.jpg
+  net-1825-_jpg.rf.01b0f9ee84900f432311a88c3e0dfded.jpg  ->  net-14857-_jpg.rf.9f940abf86f3016ac0c860cd775e308a.jpg
+  net-1879-_jpg.rf.e9f2cb8259277d29d632f8e40be13fe2.jpg  ->  net-12160-_jpg.rf.0af09d52aa0e454cfbce08c0a10774c2.jpg
+  net-2783-_jpg.rf.4e93bedb668263d46c5f7bdf6da964b9.jpg  ->  net-711-_jpg.rf.5c6e6553333ac5620bcaf14842863bdf.jpg
+  net-2855-_jpg.rf.2d9d86a01ae3d0dcf3777da99a518bfd.jpg  ->  net-1342-_jpg.rf.bb24114e5823dab778d33827375d1c13.jpg
+  net-2961-_jpg.rf.0bb9d3576c9c7e1f81072300c61f6afc.jpg  ->  net-3086-_jpg.rf.d33352f91083a0f3ae46bce8f942bba3.jpg
+  net-2994-_jpg.rf.1a9dcf2909385313ec532d78c320e0ab.jpg  ->  net-5448-_jpg.rf.7579a51c59e8a3009b73039e15f8b3a7.jpg
+  net-3149-_jpg.rf.0841615fbd6dc397649126a5d7649d2f.jpg  ->  net-15538-_jpg.rf.ba1602f8c3248cf083b1f24948679f99.jpg
+  net-3216-_jpg.rf.5b688d08d728c22e9e4cee62686f4586.jpg  ->  net-14080-_jpg.rf.a701d54e8393a7443b5a1d7f7c19ec8d.jpg
+  net-3415-_jpg.rf.00c8bb2e355be8af00cfe6e15b4f8e13.jpg  ->  net-6582-_jpg.rf.eec93df4950d41cf8af3a6ec841dd149.jpg
+  net-3865-_jpg.rf.d26f4aff5bdc22e2c563ca81ffd240c5.jpg  ->  net-11657-_jpg.rf.a01c2500a0b87e4bf197f605957b0bb2.jpg
+  net-3959-_jpg.rf.a09f6d4e5378b73850131c4a38a98618.jpg  ->  net-5285-_jpg.rf.292a66188ffb38834b1234a1306387b7.jpg
+  net-4157-_jpg.rf.03bdd9a9bb74aa3e0c50ab7b8a00f029.jpg  ->  net-12981-_jpg.rf.b9ea043b9df94c2ca9cf8231a2173985.jpg
+  net-4202-_jpg.rf.71b394149fe8764e1e52ede6ed3072f6.jpg  ->  net-6914-_jpg.rf.8ceb218c6f9b2ed10ad3ec8a77560329.jpg
+  net-4343-_jpg.rf.f8c5f03e3cde309de8c31729855187df.jpg  ->  net-14633-_jpg.rf.de43ed71feb9f31974568ddda296eb96.jpg
+  net-4424-_jpg.rf.081ab70d202fe09c24d8ecce1ad2c025.jpg  ->  net-648-_jpg.rf.d2bbe3506d54d44152f40555941d19dc.jpg
+  net-4561-_jpg.rf.e5e54cbcf2d548e86d7bc925d519076a.jpg  ->  net-8462-_jpg.rf.6641502bff4fce9e94a9e2cccf6ae173.jpg
+  net-5102-_jpg.rf.bc110ff920cc462a74079ffe19039f7b.jpg  ->  net-11540-_jpg.rf.ccedb2f501071156ced9a69b7e368a97.jpg
+  net-5212-_jpg.rf.323e65c559807563c1d887674f51a5d9.jpg  ->  net-12932-_jpg.rf.7567eb63e84002d4a187cf93b66755a7.jpg
+  net-5385-_jpg.rf.282b2fefa79c8e1fec4fa7dab8247ab6.jpg  ->  net-5253-_jpg.rf.71f54e638adaecb359800e5fcfec63d5.jpg
+  net-5676-_jpg.rf.3f11a2cff5db44d86d5a8f5fc8b14ad3.jpg  ->  net-6760-_jpg.rf.bacb63de41d2c4c472315137bbc93810.jpg
+  net-5836-_jpg.rf.44fe00ee373ac471c9adf2d819f7231a.jpg  ->  net-11611-_jpg.rf.5a0c2f92c3fbf3e7f1380de0fcf70180.jpg
+  net-591-_jpg.rf.957fbd2f9dbe68fe822527a916b34b99.jpg  ->  net-15604-_jpg.rf.e4354e5403c86fb16918f8d5147c904f.jpg
+  net-5974-_jpg.rf.736fd81f4155b41497d9a77203900b61.jpg  ->  net-14674-_jpg.rf.bb2893521756c926edacc28aefeb863a.jpg
+  net-6019-_jpg.rf.e94fc70166318c1e5ec9761d7cfb8e1f.jpg  ->  net-15649-_jpg.rf.c88d2d1ee1953259501c6330878be5ba.jpg
+  net-65-_jpg.rf.bf11114fbe8c525dfa9b65623c9dc73b.jpg  ->  net-4534-_jpg.rf.13d665b736802da2893c9c88e75c710e.jpg
+  net-6838-_jpg.rf.d4f7f3902e0cdeafbf00703be814abe5.jpg  ->  net-3086-_jpg.rf.d33352f91083a0f3ae46bce8f942bba3.jpg
+  net-6915-_jpg.rf.8b24db826daa05e2cdca8f9066f95fcc.jpg  ->  net-11959-_jpg.rf.c233bd7bc4975300e52f51e043615a81.jpg
+  net-6948-_jpg.rf.5d1c2c9ff04cdc93559a442b83cd0b6d.jpg  ->  net-15446-_jpg.rf.38f9d8d88b422cce8f979ed037b671f8.jpg
+  net-6987-_jpg.rf.da957128b144998ef791ce06cc9e8db9.jpg  ->  net-11170-_jpg.rf.55ebb031b9efcc01134b3e8c64532c07.jpg
+  net-713-_jpg.rf.3e878e8a9a48a2a1c9a3d97766c393fe.jpg  ->  net-2848-_jpg.rf.6dd8c2b1fe6aee44055bea2400a39123.jpg
+  net-7277-_jpg.rf.59cc9084486bf95774e0c113cadc9e47.jpg  ->  net-15218-_jpg.rf.6e4ddb7439effba5b884fc2b88607c91.jpg
+  net-7312-_jpg.rf.9b7b6a352240e63b1f0dd1e786f46e5d.jpg  ->  net-6106-_jpg.rf.c5ec51a2838ecbbfdff40a246c4a7015.jpg
+  net-7460-_jpg.rf.daca778a3245fce3e76f2f8bcd5b0f58.jpg  ->  net-1900-_jpg.rf.479ccd7d9276dce8fb19b7676815c46a.jpg
+  net-7682-_jpg.rf.75a1389561e255ba6d3a3fdafbdc3fd7.jpg  ->  net-7707-_jpg.rf.0087d42e88139e2b251db07d72b2dcbc.jpg
+  net-7845-_jpg.rf.003339d709246658aac3a2a7a692a719.jpg  ->  net-7001-_jpg.rf.e8bb415eafb05eddba6863c29f6938ce.jpg
+  net-7926-_jpg.rf.a2beef94d9300c9e266bc8f48246ee5a.jpg  ->  net-968-_jpg.rf.e18d6c74a06563d58ee2561072e5daeb.jpg
+  net-7931-_jpg.rf.4520df9c8b83d471eb2bca7f7b5f9c1a.jpg  ->  net-968-_jpg.rf.e18d6c74a06563d58ee2561072e5daeb.jpg
+  net-7948-_jpg.rf.83a5b9bc313a099cf4ef103518d6aec7.jpg  ->  net-4257-_jpg.rf.af20c35fc85f08ddb0bda25ddc1cc362.jpg
+  net-8103-_jpg.rf.5e982e54d9c160f16cdaed0755a47d88.jpg  ->  net-11828-_jpg.rf.ab719ae484ada4bf30d9728aa9e565d1.jpg
+  net-8119-_jpg.rf.942525377369d4eb48bc8e686aa2cca2.jpg  ->  net-7382-_jpg.rf.5bb3e3c82e622f66985d7cc152a6f73a.jpg
+  net-83-_jpg.rf.25e78a90c93a0dbb2cefdf398425fef3.jpg  ->  net-12133-_jpg.rf.6fb82b4e2ff78a6066adff841ebdbe9f.jpg
+  net-8748-_jpg.rf.f5336cf9f13af7b088491658a8908f19.jpg  ->  net-1453-_jpg.rf.60c21ca3da6403efa2a1040afe75f3ac.jpg
+  net-8908-_jpg.rf.b435de04fbf2b23643be508daba760d8.jpg  ->  net-5892-_jpg.rf.76a6de2aca9ff1a4c62ffae2ff6884ed.jpg
+  net-8996-_jpg.rf.453849b10b1f1ddbbc60067fb8f929e2.jpg  ->  net-11670-_jpg.rf.938026f2527bcd1e3d9dc08e7c87da07.jpg
+  net-9299-_jpg.rf.39625d5bf2ba738a3ac928969f016d60.jpg  ->  net-15069-_jpg.rf.37e018206770f8129e7792a6e0708f3d.jpg
+================================================================================
